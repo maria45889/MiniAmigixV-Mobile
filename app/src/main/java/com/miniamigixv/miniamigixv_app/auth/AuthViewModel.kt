@@ -30,7 +30,7 @@ class AuthViewModel : ViewModel() {
     private val repository = AuthRepository()
 
     companion object {
-        const val WEB_CLIENT_ID = "TU_WEB_CLIENT_ID_AQUI"
+        const val WEB_CLIENT_ID = "1048076085575-d8mtgbshn5odilkdv27k34b705vpregg.apps.googleusercontent.com"
     }
 
     fun updateEmail(email: String) {
@@ -121,6 +121,10 @@ class AuthViewModel : ViewModel() {
                     )
                 }
             }
+    }
+
+    fun handleGoogleSignInError(errorMessage: String) {
+        state = state.copy(errorMessage = errorMessage)
     }
 
     fun logout() {

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 object AuthApiClient {
 
-    private const val BASE_URL = "http://10.19.2.140:3000/"
+    private const val BASE_URL = "http://10.0.2.2:3000/"
     private const val TIMEOUT_SECONDS = 30L
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {

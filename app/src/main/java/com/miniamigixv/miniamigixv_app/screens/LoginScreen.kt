@@ -32,6 +32,7 @@ import com.miniamigixv.miniamigixv_app.auth.AuthViewModel
 fun LoginScreen(
     onNavigateToRegister: () -> Unit = {},
     onNavigateToHome: () -> Unit = {},
+    onGoogleSignIn: () -> Unit = {},
     authViewModel: AuthViewModel = viewModel()
 ) {
     val state = authViewModel.state
@@ -174,6 +175,29 @@ fun LoginScreen(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = onGoogleSignIn,
+            enabled = !state.isLoading,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            )
+        ) {
+            Icon(
+                painter = painterResource(id = android.R.drawable.ic_menu_myplaces),
+                contentDescription = "Google",
+                modifier = Modifier.size(24.dp),
+                tint = Color.Unspecified
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Continuar con Google", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Row(
             horizontalArrangement = Arrangement.Center,

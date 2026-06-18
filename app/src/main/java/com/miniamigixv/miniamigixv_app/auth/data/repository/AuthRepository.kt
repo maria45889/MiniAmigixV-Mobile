@@ -9,7 +9,7 @@ import com.miniamigixv.miniamigixv_app.auth.data.remote.RegisterRequest
 class AuthRepository {
 
     companion object {
-        var useMockApi: Boolean = false
+        var useMockApi: Boolean = true
     }
 
     private val api = AuthApiClient.apiService

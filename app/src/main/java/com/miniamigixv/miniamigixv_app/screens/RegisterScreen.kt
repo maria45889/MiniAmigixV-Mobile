@@ -1,11 +1,7 @@
 package com.miniamigixv.miniamigixv_app.screens
 
-import android.app.Activity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,15 +9,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,9 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.miniamigixv.miniamigixv_app.R
 import com.miniamigixv.miniamigixv_app.auth.AuthViewModel
 
@@ -42,27 +32,11 @@ import com.miniamigixv.miniamigixv_app.auth.AuthViewModel
 fun RegisterScreen(
     onNavigateToLogin: () -> Unit = {},
     onNavigateToHome: () -> Unit = {},
+    onGoogleSignIn: () -> Unit = {},
     authViewModel: AuthViewModel = viewModel()
 ) {
     val state = authViewModel.state
     val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
-
-    val googleSignInLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                account.idToken?.let { token ->
-                    authViewModel.handleGoogleSignInResult(token, onNavigateToHome)
-                }
-            } catch (e: ApiException) {
-                // error silencioso, el usuario puede reintentar
-            }
-        }
-    }
 
     Column(
         modifier = Modifier
@@ -237,30 +211,25 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedButton(
-            onClick = {
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(AuthViewModel.WEB_CLIENT_ID)
-                    .requestEmail()
-                    .build()
-                val client = GoogleSignIn.getClient(context, gso)
-                googleSignInLauncher.launch(client.signInIntent)
-            },
+        Button(
+            onClick = onGoogleSignIn,
             enabled = !state.isLoading,
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = Color(0xFFe0e0e0)
-            ),
-            border = BorderStroke(1.dp, Color(0xFF4a4a6a))
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            )
         ) {
             Icon(
-                imageVector = Icons.Default.AccountCircle,
+                painter = painterResource(id = android.R.drawable.ic_menu_myplaces),
                 contentDescription = "Google",
-                tint = Color(0xFFe0e0e0),
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(24.dp),
+                tint = Color.Unspecified
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Registrarse con Google", fontSize = 14.sp, color = Color(0xFFe0e0e0))
+            Text("Registrarse con Google", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(24.dp))

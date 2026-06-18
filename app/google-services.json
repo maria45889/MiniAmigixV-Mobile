@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "230408153478",
-    "project_id": "miniamigixv-28827",
-    "storage_bucket": "miniamigixv-28827.firebasestorage.app"
+    "project_number": "1048076085575",
+    "project_id": "miniamigixv-3f9ae",
+    "storage_bucket": "miniamigixv-3f9ae.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:230408153478:android:064c5430f06f57ee53e407",
+        "mobilesdk_app_id": "1:1048076085575:android:579dd50838265b97ce4462",
         "android_client_info": {
           "package_name": "com.miniamigixv.miniamigixv_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1048076085575-p75qfsf064j4fhqflmr27igbdr1lull8.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1048076085575-d8mtgbshn5odilkdv27k34b705vpregg.apps.googleusercontent.com",
+          "client_type": 1
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyB5Wigedhf0py4ok6mvyjMxNoqb6_42vTE"
+          "current_key": "AIzaSyCz_DAnDSKzL0g_nLF_nq1o8M1Xhyo-y1c"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048076085575-p75qfsf064j4fhqflmr27igbdr1lull8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1048076085575-d8mtgbshn5odilkdv27k34b705vpregg.apps.googleusercontent.com",
+              "client_type": 1
+            }
+          ]
         }
       }
     }
