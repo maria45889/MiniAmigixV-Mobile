@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "230408153478",
+    "project_id": "miniamigixv-28827",
+    "storage_bucket": "miniamigixv-28827.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230408153478:android:064c5430f06f57ee53e407",
+        "android_client_info": {
+          "package_name": "com.miniamigixv.miniamigixv_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5Wigedhf0py4ok6mvyjMxNoqb6_42vTE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,19 @@
+package com.miniamigixv.miniamigixv_app.screens
+
+sealed class Screen(val route: String) {
+    data object Login : Screen("login")
+    data object Register : Screen("register")
+    data object Home : Screen("home")
+    data object Weather : Screen("weather")
+    data object Music : Screen("music")
+    data object Chat : Screen("chat")
+    data object Profile : Screen("profile")
+    data object Games : Screen("games")
+    data object Study : Screen("study")
+    data object Events : Screen("events")
+    data object Translator : Screen("translator")
+    data object Entertainment : Screen("entertainment")
+    data object Blog : Screen("blog")
+    data object Support : Screen("support")
+    data object AdminCenter : Screen("admin_center")
+}

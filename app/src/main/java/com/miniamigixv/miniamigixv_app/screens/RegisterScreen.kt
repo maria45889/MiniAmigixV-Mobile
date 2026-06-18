@@ -1,0 +1,284 @@
+package com.miniamigixv.miniamigixv_app.screens
+
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.miniamigixv.miniamigixv_app.R
+import com.miniamigixv.miniamigixv_app.auth.AuthViewModel
+
+@Composable
+fun RegisterScreen(
+    onNavigateToLogin: () -> Unit = {},
+    onNavigateToHome: () -> Unit = {},
+    authViewModel: AuthViewModel = viewModel()
+) {
+    val state = authViewModel.state
+    val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                account.idToken?.let { token ->
+                    authViewModel.handleGoogleSignInResult(token, onNavigateToHome)
+                }
+            } catch (e: ApiException) {
+                // error silencioso, el usuario puede reintentar
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF1a1a2e))
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Logo MiniAmigixV",
+            modifier = Modifier.size(80.dp)
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = "Crear cuenta",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFFa855f7)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Regístrate para usar MiniAmigixV",
+            fontSize = 14.sp,
+            color = Color(0xFFe0e0e0)
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        OutlinedTextField(
+            value = state.email,
+            onValueChange = authViewModel::updateEmail,
+            label = { Text("Usuario", color = Color(0xFFa855f7)) },
+            isError = state.emailError != null,
+            supportingText = state.emailError?.let { { Text(it, color = Color.Red) } },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            ),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFFa855f7),
+                unfocusedBorderColor = Color(0xFF4a4a6a),
+                focusedLabelColor = Color(0xFFa855f7),
+                unfocusedLabelColor = Color(0xFF8888a8)
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = state.password,
+            onValueChange = authViewModel::updatePassword,
+            label = { Text("Contraseña", color = Color(0xFFa855f7)) },
+            isError = state.passwordError != null,
+            supportingText = state.passwordError?.let { { Text(it, color = Color.Red) } },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next
+            ),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFFa855f7),
+                unfocusedBorderColor = Color(0xFF4a4a6a),
+                focusedLabelColor = Color(0xFFa855f7),
+                unfocusedLabelColor = Color(0xFF8888a8)
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = state.confirmPassword,
+            onValueChange = authViewModel::updateConfirmPassword,
+            label = { Text("Confirmar Contraseña", color = Color(0xFFa855f7)) },
+            isError = state.confirmPasswordError != null,
+            supportingText = state.confirmPasswordError?.let { { Text(it, color = Color.Red) } },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    authViewModel.register(onNavigateToHome)
+                }
+            ),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFFa855f7),
+                unfocusedBorderColor = Color(0xFF4a4a6a),
+                focusedLabelColor = Color(0xFFa855f7),
+                unfocusedLabelColor = Color(0xFF8888a8)
+            )
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (state.errorMessage != null) {
+            Text(
+                text = state.errorMessage,
+                color = Color.Red,
+                fontSize = 13.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {
+                focusManager.clearFocus()
+                authViewModel.register(onNavigateToHome)
+            },
+            enabled = !state.isLoading,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(Color(0xFFa855f7), Color(0xFF3b82f6))
+                    ),
+                    shape = RoundedCornerShape(25.dp)
+                ),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+        ) {
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp,
+                    color = Color.White
+                )
+            } else {
+                Text("Registrarse", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            HorizontalDivider(
+                modifier = Modifier.weight(1f),
+                color = Color(0xFF4a4a6a)
+            )
+            Text(
+                text = " O ",
+                color = Color(0xFF8888a8),
+                fontSize = 14.sp
+            )
+            HorizontalDivider(
+                modifier = Modifier.weight(1f),
+                color = Color(0xFF4a4a6a)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedButton(
+            onClick = {
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(AuthViewModel.WEB_CLIENT_ID)
+                    .requestEmail()
+                    .build()
+                val client = GoogleSignIn.getClient(context, gso)
+                googleSignInLauncher.launch(client.signInIntent)
+            },
+            enabled = !state.isLoading,
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = Color(0xFFe0e0e0)
+            ),
+            border = BorderStroke(1.dp, Color(0xFF4a4a6a))
+        ) {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = "Google",
+                tint = Color(0xFFe0e0e0),
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Registrarse con Google", fontSize = 14.sp, color = Color(0xFFe0e0e0))
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("¿Ya tienes cuenta? ", fontSize = 14.sp, color = Color(0xFFe0e0e0))
+            Text(
+                text = "Inicia sesión",
+                color = Color(0xFFa855f7),
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+                modifier = Modifier.clickable(enabled = !state.isLoading) { onNavigateToLogin() }
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+    }
+}
