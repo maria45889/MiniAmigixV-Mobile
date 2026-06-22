@@ -1,6 +1,7 @@
 package com.miniamigixv.miniamigixv_app
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,6 +25,14 @@ import com.miniamigixv.miniamigixv_app.screens.ProfileScreen
 import com.miniamigixv.miniamigixv_app.screens.RegisterScreen
 import com.miniamigixv.miniamigixv_app.screens.Screen
 import com.miniamigixv.miniamigixv_app.screens.WeatherScreen
+import com.miniamigixv.miniamigixv_app.screens.GamesScreen
+import com.miniamigixv.miniamigixv_app.screens.StudyScreen
+import com.miniamigixv.miniamigixv_app.screens.EventsScreen
+import com.miniamigixv.miniamigixv_app.screens.TranslatorScreen
+import com.miniamigixv.miniamigixv_app.screens.EntertainmentScreen
+import com.miniamigixv.miniamigixv_app.screens.BlogScreen
+import com.miniamigixv.miniamigixv_app.screens.SupportScreen
+import com.miniamigixv.miniamigixv_app.screens.AdminCenterScreen
 import com.miniamigixv.miniamigixv_app.ui.theme.MiniAmigixV_AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,17 +43,24 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val data = result.data
+        Log.d("GoogleSignIn", "Google Sign-In result received")
         val task = GoogleSignIn.getSignedInAccountFromIntent(data)
         try {
             val account = task.getResult(ApiException::class.java)
+            Log.d("GoogleSignIn", "Account obtained: ${account.email}")
             val idToken = account.idToken
+            Log.d("GoogleSignIn", "ID Token: ${if (idToken != null) "Present" else "NULL"}")
             if (idToken != null) {
                 authViewModel.handleGoogleSignInResult(idToken) {
                     onGoogleSignInSuccess?.invoke()
                 }
+            } else {
+                Log.e("GoogleSignIn", "ID Token is null")
+                authViewModel.handleGoogleSignInError("Error: ID Token es nulo")
             }
         } catch (e: ApiException) {
-            authViewModel.handleGoogleSignInError("Error con Google Sign-In: ${e.message}")
+            Log.e("GoogleSignIn", "Google Sign-In failed", e)
+            authViewModel.handleGoogleSignInError("Error con Google Sign-In: ${e.message} (Código: ${e.statusCode})")
         }
     }
 
@@ -84,8 +100,7 @@ fun AppNavigation(mainActivity: MainActivity) {
         composable(Screen.Login.route) {
             LoginScreen(
                 onNavigateToRegister = { navController.navigate(Screen.Register.route) },
-                onNavigateToHome = { navController.navigate(Screen.Home.route) },
-                onGoogleSignIn = { mainActivity.signInWithGoogle { navController.navigate(Screen.Home.route) } }
+                onNavigateToHome = { navController.navigate(Screen.Home.route) }
             )
         }
         composable(Screen.Register.route) {
@@ -101,14 +116,14 @@ fun AppNavigation(mainActivity: MainActivity) {
                 onNavigateToMusic = { navController.navigate(Screen.Music.route) },
                 onNavigateToChat = { navController.navigate(Screen.Chat.route) },
                 onNavigateToProfile = { navController.navigate(Screen.Profile.route) },
-                onNavigateToGames = { /* TODO: Implement Games screen */ },
-                onNavigateToStudy = { /* TODO: Implement Study screen */ },
-                onNavigateToEvents = { /* TODO: Implement Events screen */ },
-                onNavigateToTranslator = { /* TODO: Implement Translator screen */ },
-                onNavigateToEntertainment = { /* TODO: Implement Entertainment screen */ },
-                onNavigateToBlog = { /* TODO: Implement Blog screen */ },
-                onNavigateToSupport = { /* TODO: Implement Support screen */ },
-                onNavigateToAdminCenter = { /* TODO: Implement Admin Center screen */ },
+                onNavigateToGames = { navController.navigate(Screen.Games.route) },
+                onNavigateToStudy = { navController.navigate(Screen.Study.route) },
+                onNavigateToEvents = { navController.navigate(Screen.Events.route) },
+                onNavigateToTranslator = { navController.navigate(Screen.Translator.route) },
+                onNavigateToEntertainment = { navController.navigate(Screen.Entertainment.route) },
+                onNavigateToBlog = { navController.navigate(Screen.Blog.route) },
+                onNavigateToSupport = { navController.navigate(Screen.Support.route) },
+                onNavigateToAdminCenter = { navController.navigate(Screen.AdminCenter.route) },
                 onLogout = { navController.popBackStack(Screen.Login.route, inclusive = true) }
             )
         }
@@ -123,6 +138,30 @@ fun AppNavigation(mainActivity: MainActivity) {
         }
         composable(Screen.Profile.route) {
             ProfileScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Games.route) {
+            GamesScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Study.route) {
+            StudyScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Events.route) {
+            EventsScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Translator.route) {
+            TranslatorScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Entertainment.route) {
+            EntertainmentScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Blog.route) {
+            BlogScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Support.route) {
+            SupportScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.AdminCenter.route) {
+            AdminCenterScreen(onBack = { navController.popBackStack() })
         }
     }
 }

@@ -9,7 +9,7 @@ import com.miniamigixv.miniamigixv_app.auth.data.remote.RegisterRequest
 class AuthRepository {
 
     companion object {
-        var useMockApi: Boolean = true
+        var useMockApi: Boolean = false
     }
 
     private val api = AuthApiClient.apiService
@@ -25,10 +25,10 @@ class AuthRepository {
                     Result.failure(Exception("Credenciales inválidas"))
                 }
             } else {
-                val response = api.login(LoginRequest(email, password))
+                val response = api.login(LoginRequest(username = email, password = password))
                 if (response.isSuccessful) {
                     val body = response.body()
-                    Result.success(body?.token ?: "")
+                    Result.success(body?.access ?: "")
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val errorMsg = try {
@@ -54,10 +54,13 @@ class AuthRepository {
                     Result.failure(Exception("Correo inválido"))
                 }
             } else {
-                val response = api.register(RegisterRequest(email, password))
+                val response = api.register(RegisterRequest(username = email, email = email, password = password))
                 if (response.isSuccessful) {
-                    val body = response.body()
-                    Result.success(body?.token ?: "")
+                    // Registration might not return tokens directly depending on Django view
+                    // We'll return success and then ViewModel should probably login.
+                    // Assuming we modified Django to not return tokens, we just return empty string on success.
+                    // But actually our Django view doesn't return tokens, it returns the User object.
+                    Result.success("registered")
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val errorMsg = try {

@@ -12,11 +12,20 @@ object ChatApiClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
+    private val authInterceptor = okhttp3.Interceptor { chain ->
+        val requestBuilder = chain.request().newBuilder()
+        com.miniamigixv.miniamigixv_app.auth.data.repository.TokenManager.token?.let { token ->
+            requestBuilder.addHeader("Authorization", "Bearer $token")
+        }
+        chain.proceed(requestBuilder.build())
+    }
+
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(ChatApiConfig.TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .readTimeout(ChatApiConfig.TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .writeTimeout(ChatApiConfig.TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .addInterceptor(loggingInterceptor)
+        .addInterceptor(authInterceptor)
         .build()
 
     private val retrofit = Retrofit.Builder()

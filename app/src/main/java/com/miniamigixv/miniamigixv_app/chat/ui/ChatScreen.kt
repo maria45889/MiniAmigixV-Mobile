@@ -2,10 +2,12 @@ package com.miniamigixv.miniamigixv_app.chat.ui
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,6 +18,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -23,6 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.miniamigixv.miniamigixv_app.chat.data.model.ChatMessage
+
+// Colors to match the new Neon Web Chat UI
+private val BgDark = Color(0xFF0D0F16) // Solid dark background for the chat area
+private val UserBubble = Color(0xFF1E3A8A) // Dark blue for user
+private val AIBubble = Color(0xFF1F2937) // Dark gray/blue for AI
+private val UserAvatar = Color(0xFF06B6D4) // Cyan avatar
+private val AIAvatar = Color(0xFF8B5CF6) // Purple avatar
+private val InputBg = Color(0xFF111827) // Very dark input background
+private val TextGray = Color(0xFFA0A0A0)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,31 +54,39 @@ fun ChatScreen(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BgDark)
+    ) {
         TopAppBar(
             title = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.SmartToy, contentDescription = null, modifier = Modifier.size(24.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Chat IA", fontSize = 20.sp)
+                    Text("Chat / ", color = TextGray, fontSize = 16.sp)
+                    Text("Chat Principal", fontSize = 18.sp, color = Color.White, fontWeight = FontWeight.Bold)
                 }
             },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = Color.White)
                 }
             },
             actions = {
                 if (messages.isNotEmpty()) {
                     IconButton(onClick = { chatViewModel.clearMessages() }) {
-                        Icon(Icons.Filled.DeleteSweep, contentDescription = "Limpiar chat")
+                        Icon(Icons.Filled.DeleteSweep, contentDescription = "Limpiar chat", tint = Color.White)
                     }
+                }
+                IconButton(onClick = { /* Settings */ }) {
+                    Icon(Icons.Filled.Settings, contentDescription = "Configuración", tint = Color.White)
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = Color(0xFF111827) // Slightly lighter than background
             )
         )
+
+        Divider(color = Color.White.copy(alpha = 0.05f))
 
         if (state is ChatUiState.Error) {
             Card(
@@ -112,19 +133,12 @@ fun ChatScreen(
                         Icons.Filled.SmartToy,
                         contentDescription = null,
                         modifier = Modifier.size(72.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                        tint = Color.White.copy(alpha = 0.2f)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         "Inicia una conversación con MiniAmigixV",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        "Prueba: hola, clima, ayuda, música",
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                        color = Color.White.copy(alpha = 0.5f),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -133,11 +147,11 @@ fun ChatScreen(
             LazyColumn(
                 state = listState,
                 modifier = Modifier.weight(1f).fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(messages, key = { it.id }) { message ->
-                    ChatBubble(message)
+                    ChatBubbleWithAvatar(message)
                 }
                 if (state is ChatUiState.Sending) {
                     item { TypingIndicator() }
@@ -145,40 +159,77 @@ fun ChatScreen(
             }
         }
 
+        // Bottom Input Bar
         Surface(
-            tonalElevation = 3.dp,
-            shadowElevation = 8.dp,
+            color = BgDark,
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
                     .navigationBarsPadding(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                OutlinedTextField(
-                    value = inputText,
-                    onValueChange = chatViewModel::updateInputText,
-                    modifier = Modifier.weight(1f),
-                    placeholder = { Text("Escribe un mensaje...") },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                    keyboardActions = KeyboardActions(
-                        onSend = { chatViewModel.sendMessage() }
-                    ),
-                    singleLine = true,
-                    shape = RoundedCornerShape(24.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-                    )
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                FilledIconButton(
-                    onClick = { chatViewModel.sendMessage() },
-                    enabled = inputText.isNotBlank(),
-                    modifier = Modifier.size(48.dp)
+                // Input TextField
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(InputBg)
+                        .border(1.dp, Color.White.copy(alpha=0.1f), RoundedCornerShape(24.dp))
+                        .padding(horizontal = 4.dp),
+                    contentAlignment = Alignment.CenterStart
                 ) {
-                    Icon(Icons.Filled.Send, contentDescription = "Enviar")
+                    OutlinedTextField(
+                        value = inputText,
+                        onValueChange = chatViewModel::updateInputText,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = { Text("Escribe un mensaje...", color = TextGray) },
+                        leadingIcon = {
+                            Icon(Icons.Filled.EmojiEmotions, contentDescription = "Emoji", tint = Color(0xFFF59E0B))
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                        keyboardActions = KeyboardActions(
+                            onSend = { chatViewModel.sendMessage() }
+                        ),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            cursorColor = Color(0xFF3B82F6)
+                        )
+                    )
+                }
+                
+                Spacer(modifier = Modifier.width(8.dp))
+                
+                // Voice / Audio Icon
+                IconButton(onClick = { /* Voice message */ }) {
+                    Icon(Icons.Filled.VolumeUp, contentDescription = "Audio", tint = TextGray)
+                }
+
+                // Send Button
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(Color(0xFF8B5CF6), Color(0xFF3b82f6))
+                            ),
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    IconButton(
+                        onClick = { chatViewModel.sendMessage() },
+                        enabled = inputText.isNotBlank(),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Icon(Icons.Filled.Send, contentDescription = "Enviar", tint = Color.White)
+                    }
                 }
             }
         }
@@ -186,46 +237,63 @@ fun ChatScreen(
 }
 
 @Composable
-private fun ChatBubble(message: ChatMessage) {
-    val alignment = if (message.isUser) Alignment.End else Alignment.Start
-    val containerColor = if (message.isUser)
-        MaterialTheme.colorScheme.primary
-    else
-        MaterialTheme.colorScheme.surfaceVariant
-    val contentColor = if (message.isUser)
-        MaterialTheme.colorScheme.onPrimary
-    else
-        MaterialTheme.colorScheme.onSurfaceVariant
-    val shape = if (message.isUser)
-        RoundedCornerShape(18.dp, 18.dp, 4.dp, 18.dp)
-    else
-        RoundedCornerShape(18.dp, 18.dp, 18.dp, 4.dp)
-
-    Column(
+private fun ChatBubbleWithAvatar(message: ChatMessage) {
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = alignment
+        horizontalArrangement = if (message.isUser) Arrangement.End else Arrangement.Start,
+        verticalAlignment = Alignment.Bottom
     ) {
+        if (!message.isUser) {
+            // AI Avatar
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(AIAvatar),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Filled.SmartToy, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+
+        // Bubble
+        val containerColor = if (message.isUser) UserBubble else AIBubble
+        val shape = RoundedCornerShape(12.dp)
+
         Surface(
             shape = shape,
             color = containerColor,
-            border = if (message.isUser) null
-                else androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)),
             modifier = Modifier.widthIn(max = 280.dp)
         ) {
             Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
                 Text(
                     text = message.text,
                     fontSize = 15.sp,
-                    color = contentColor,
+                    color = Color.White,
                     lineHeight = 20.sp
                 )
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = formatTimestamp(message.timestamp),
-                    fontSize = 11.sp,
-                    color = contentColor.copy(alpha = 0.6f),
+                    fontSize = 10.sp,
+                    color = Color.White.copy(alpha = 0.5f),
                     modifier = Modifier.align(Alignment.End)
                 )
+            }
+        }
+
+        if (message.isUser) {
+            Spacer(modifier = Modifier.width(8.dp))
+            // User Avatar
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(UserAvatar),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("M", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         }
     }
@@ -235,11 +303,24 @@ private fun ChatBubble(message: ChatMessage) {
 private fun TypingIndicator() {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.Bottom
     ) {
+        // AI Avatar
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
+                .background(AIAvatar),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(Icons.Filled.SmartToy, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+
         Surface(
-            shape = RoundedCornerShape(18.dp, 18.dp, 18.dp, 4.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = RoundedCornerShape(12.dp),
+            color = AIBubble,
             modifier = Modifier.widthIn(max = 80.dp)
         ) {
             Row(
@@ -249,9 +330,9 @@ private fun TypingIndicator() {
                 repeat(3) {
                     Box(
                         modifier = Modifier
-                            .size(8.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.5f))
                     )
                 }
             }

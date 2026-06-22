@@ -1,13 +1,8 @@
 package com.miniamigixv.miniamigixv_app.auth.data.remote
 
 data class AuthResponse(
-    val token: String,
-    val user: UserInfo
-)
-
-data class UserInfo(
-    val id: Int,
-    val email: String
+    val access: String,
+    val refresh: String? = null
 )
 
 data class AuthErrorResponse(

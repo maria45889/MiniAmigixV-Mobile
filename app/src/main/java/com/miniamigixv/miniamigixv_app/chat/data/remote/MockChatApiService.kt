@@ -20,8 +20,12 @@ class MockChatApiService : ChatApiService {
 
         val lower = request.message.lowercase().trim()
         val matched = responses.entries.firstOrNull { (key, _) -> lower.contains(key) }
-        val reply = matched?.value ?: "Interesante tu mensaje. Soy MiniAmigixV, tu asistente. Cuéntame más sobre eso."
+        val response = matched?.value ?: "Interesante tu mensaje. Soy MiniAmigixV, tu asistente. Cuéntame más sobre eso."
 
-        return ChatResponse(reply = reply)
+        return ChatResponse(response = response)
+    }
+
+    override suspend fun getHistory(): List<com.miniamigixv.miniamigixv_app.chat.data.remote.ChatHistoryItem> {
+        return emptyList()
     }
 }

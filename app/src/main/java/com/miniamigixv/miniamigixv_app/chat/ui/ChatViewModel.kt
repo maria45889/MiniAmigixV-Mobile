@@ -23,6 +23,22 @@ class ChatViewModel : ViewModel() {
     var messages by mutableStateOf(listOf<ChatMessage>())
         private set
 
+    private fun loadHistory() {
+        viewModelScope.launch {
+            uiState = ChatUiState.Sending
+            val result = repository.getHistory()
+            result.fold(
+                onSuccess = { history ->
+                    messages = history
+                    uiState = ChatUiState.Idle
+                },
+                onFailure = { error ->
+                    uiState = ChatUiState.Error(error.message ?: "Error al cargar historial")
+                }
+            )
+        }
+    }
+
     var uiState by mutableStateOf<ChatUiState>(ChatUiState.Idle)
         private set
 
@@ -91,5 +107,9 @@ class ChatViewModel : ViewModel() {
 
     fun clearError() {
         uiState = ChatUiState.Idle
+    }
+
+    init {
+        loadHistory()
     }
 }

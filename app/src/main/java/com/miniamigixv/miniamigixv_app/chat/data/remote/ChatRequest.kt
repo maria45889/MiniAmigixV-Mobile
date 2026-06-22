@@ -7,5 +7,6 @@ data class ChatRequest(
 
 data class ChatHistoryItem(
     val role: String,
-    val content: String
+    val content: String,
+    val created_at: String = ""
 )

@@ -41,7 +41,11 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1a1a2e))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFF0F0C29), Color(0xFF302B63), Color(0xFF24243E))
+                )
+            )
             .padding(24.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,7 +78,20 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        OutlinedTextField(
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = Color.White.copy(alpha = 0.05f),
+                    shape = RoundedCornerShape(24.dp)
+                )
+                .padding(24.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
             value = state.email,
             onValueChange = authViewModel::updateEmail,
             label = { Text("Usuario", color = Color(0xFFa855f7)) },
@@ -211,25 +228,33 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
+        OutlinedButton(
             onClick = onGoogleSignIn,
             enabled = !state.isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
+            shape = RoundedCornerShape(25.dp),
+            border = androidx.compose.foundation.BorderStroke(
+                1.dp,
+                Brush.horizontalGradient(
+                    colors = listOf(Color(0xFFa855f7), Color(0xFF3b82f6))
+                )
+            ),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = Color(0xFF1A1A2E),
+                contentColor = Color.White
             )
         ) {
-            Icon(
-                painter = painterResource(id = android.R.drawable.ic_menu_myplaces),
+            Image(
+                painter = painterResource(id = R.drawable.ic_google),
                 contentDescription = "Google",
-                modifier = Modifier.size(24.dp),
-                tint = Color.Unspecified
+                modifier = Modifier.size(22.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Registrarse con Google", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.width(10.dp))
+            Text("Registrarse con Google", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+        }
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -240,7 +265,7 @@ fun RegisterScreen(
         ) {
             Text("¿Ya tienes cuenta? ", fontSize = 14.sp, color = Color(0xFFe0e0e0))
             Text(
-                text = "Inicia sesión",
+                text = "Inicia sesión aquí",
                 color = Color(0xFFa855f7),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,

@@ -11,12 +11,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
+private val NeonColorScheme = darkColorScheme(
     primary = NeonViolet,
     onPrimary = DarkOnSurface,
     primaryContainer = DarkPrimaryContainer,
     onPrimaryContainer = DarkOnPrimaryContainer,
-    secondary = NeonVioletLight,
+    secondary = NeonBlue,
     onSecondary = DarkOnBackground,
     secondaryContainer = DarkSecondaryContainer,
     onSecondaryContainer = DarkOnSecondaryContainer,
@@ -38,46 +38,20 @@ private val DarkColorScheme = darkColorScheme(
     onErrorContainer = OnErrorContainer
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = NeonViolet,
-    onPrimary = LightOnBackground,
-    primaryContainer = LightPrimaryContainer,
-    onPrimaryContainer = LightOnPrimaryContainer,
-    secondary = NeonVioletLight,
-    onSecondary = LightOnBackground,
-    secondaryContainer = LightSecondaryContainer,
-    onSecondaryContainer = LightOnSecondaryContainer,
-    tertiary = NeonVioletLighter,
-    onTertiary = LightOnBackground,
-    tertiaryContainer = LightTertiaryContainer,
-    onTertiaryContainer = LightOnTertiaryContainer,
-    background = LightBackground,
-    onBackground = LightOnBackground,
-    surface = LightSurface,
-    onSurface = LightOnSurface,
-    surfaceVariant = LightSurfaceVariant,
-    onSurfaceVariant = LightOnSurfaceVariant,
-    outline = LightOutline,
-    outlineVariant = LightOutlineVariant,
-    error = ErrorRed,
-    onError = OnError,
-    errorContainer = ErrorContainer,
-    onErrorContainer = OnErrorContainer
-)
-
 @Composable
 fun MiniAmigixV_AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    // Always force dark neon theme to match the login screen aesthetics
+    darkTheme: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = NeonColorScheme
 
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
         }
     }
 
@@ -87,3 +61,4 @@ fun MiniAmigixV_AppTheme(
         content = content
     )
 }
+

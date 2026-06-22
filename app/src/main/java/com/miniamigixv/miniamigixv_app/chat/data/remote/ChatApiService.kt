@@ -15,10 +15,15 @@ import retrofit2.http.POST
  *   Node.js + Express → OpenAI API
  *   Python + FastAPI  → OpenAI API
  */
+import retrofit2.http.GET
+
 interface ChatApiService {
 
-    @POST("chat")
+    @POST("api/chat/send/")
     suspend fun sendMessage(
         @Body request: ChatRequest
     ): ChatResponse
+    
+    @GET("api/chat/history/")
+    suspend fun getHistory(): List<ChatHistoryItem>
 }
