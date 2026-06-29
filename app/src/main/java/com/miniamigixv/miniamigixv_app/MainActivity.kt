@@ -33,6 +33,9 @@ import com.miniamigixv.miniamigixv_app.screens.EntertainmentScreen
 import com.miniamigixv.miniamigixv_app.screens.BlogScreen
 import com.miniamigixv.miniamigixv_app.screens.SupportScreen
 import com.miniamigixv.miniamigixv_app.screens.AdminCenterScreen
+import com.miniamigixv.miniamigixv_app.screens.TutorialScreen
+import com.miniamigixv.miniamigixv_app.screens.SettingsScreen
+import com.miniamigixv.miniamigixv_app.screens.NotificationsScreen
 import com.miniamigixv.miniamigixv_app.ui.theme.MiniAmigixV_AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -124,6 +127,9 @@ fun AppNavigation(mainActivity: MainActivity) {
                 onNavigateToBlog = { navController.navigate(Screen.Blog.route) },
                 onNavigateToSupport = { navController.navigate(Screen.Support.route) },
                 onNavigateToAdminCenter = { navController.navigate(Screen.AdminCenter.route) },
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                onNavigateToTutorial = { navController.navigate(Screen.Tutorial.route) },
+                onNavigateToNotifications = { navController.navigate(Screen.Notifications.route) },
                 onLogout = { navController.popBackStack(Screen.Login.route, inclusive = true) }
             )
         }
@@ -162,6 +168,15 @@ fun AppNavigation(mainActivity: MainActivity) {
         }
         composable(Screen.AdminCenter.route) {
             AdminCenterScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Tutorial.route) {
+            TutorialScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Settings.route) {
+            SettingsScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.Notifications.route) {
+            NotificationsScreen(onBack = { navController.popBackStack() })
         }
     }
 }

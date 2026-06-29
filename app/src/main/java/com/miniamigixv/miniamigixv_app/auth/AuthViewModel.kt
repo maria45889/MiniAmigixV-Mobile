@@ -31,7 +31,7 @@ class AuthViewModel : ViewModel() {
     private val repository = AuthRepository()
 
     companion object {
-        const val WEB_CLIENT_ID = "1048076085575-p75qfsf064j4fhqflmr27igbdr1lull8.apps.googleusercontent.com"
+        const val WEB_CLIENT_ID = "230408153478-6afmk5r0nf2n23g67ctoh8orrm273lll.apps.googleusercontent.com"
     }
 
     fun updateEmail(email: String) {

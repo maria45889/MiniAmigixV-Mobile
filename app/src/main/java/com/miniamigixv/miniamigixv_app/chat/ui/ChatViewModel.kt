@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.miniamigixv.miniamigixv_app.chat.data.model.ChatConversation
 import com.miniamigixv.miniamigixv_app.chat.data.model.ChatMessage
 import com.miniamigixv.miniamigixv_app.chat.data.repository.ChatRepository
 import kotlinx.coroutines.launch
@@ -21,6 +22,12 @@ class ChatViewModel : ViewModel() {
     private val repository = ChatRepository()
 
     var messages by mutableStateOf(listOf<ChatMessage>())
+        private set
+
+    var conversations by mutableStateOf(listOf<ChatConversation>())
+        private set
+
+    var selectedConversationId by mutableStateOf<String?>(null)
         private set
 
     private fun loadHistory() {
@@ -109,7 +116,62 @@ class ChatViewModel : ViewModel() {
         uiState = ChatUiState.Idle
     }
 
+    fun selectConversation(conversationId: String) {
+        selectedConversationId = conversationId
+        messages = emptyList()
+        loadHistory()
+    }
+
+    fun createNewConversation() {
+        val newId = UUID.randomUUID().toString()
+        val newConversation = ChatConversation(
+            id = newId,
+            name = "Nuevo Chat",
+            lastMessage = "",
+            timestamp = System.currentTimeMillis(),
+            unreadCount = 0
+        )
+        conversations = conversations + newConversation
+        selectConversation(newId)
+    }
+
+    private fun loadMockConversations() {
+        val now = System.currentTimeMillis()
+        conversations = listOf(
+            ChatConversation(
+                id = "1",
+                name = "Chat 08:05",
+                lastMessage = "Hola, ¿cómo estás?",
+                timestamp = now - 3600000,
+                unreadCount = 0
+            ),
+            ChatConversation(
+                id = "2",
+                name = "Chat 07:11",
+                lastMessage = "Gracias por tu ayuda",
+                timestamp = now - 7200000,
+                unreadCount = 2
+            ),
+            ChatConversation(
+                id = "3",
+                name = "Chat 08:56",
+                lastMessage = "¿Puedes explicarme más?",
+                timestamp = now - 1800000,
+                unreadCount = 0
+            ),
+            ChatConversation(
+                id = "4",
+                name = "Chat Principal",
+                lastMessage = "Inicia una conversación",
+                timestamp = now,
+                unreadCount = 0
+            )
+        )
+        selectedConversationId = "4"
+    }
+
     init {
+        loadMockConversations()
         loadHistory()
     }
 }

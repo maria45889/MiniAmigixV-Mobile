@@ -9,6 +9,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -36,19 +40,19 @@ import kotlinx.coroutines.launch
 import com.miniamigixv.miniamigixv_app.R
 
 // Dark Neon Theme Colors
-private val BgDark1 = Color(0xFF0F0C29)
-private val BgDark2 = Color(0xFF302B63)
-private val BgDark3 = Color(0xFF24243E)
-private val CardBg = Color(0x1AFFFFFF)
-private val DialogBg = Color(0xFF13131A)
-private val NeonPurple = Color(0xFFa855f7)
+private val BgDark1 = Color(0xFF050816)
+private val BgDark2 = Color(0xFF070B1A)
+private val BgDark3 = Color(0xFF050816)
+private val CardBg = Color(0xFF111827)
+private val DialogBg = Color(0xFF111827)
+private val NeonPurple = Color(0xFF8B5CF6)
 private val NeonBlue = Color(0xFF3b82f6)
-private val NeonCyan = Color(0xFF06b6d4)
+private val NeonCyan = Color(0xFF22D3EE)
 private val NeonPink = Color(0xFFec4899)
 private val NeonGreen = Color(0xFF10b981)
 private val NeonOrange = Color(0xFFf59e0b)
-private val TextWhite = Color(0xFFFFFFFF)
-private val TextGray = Color(0xFFA0A0A0)
+private val TextWhite = Color(0xFFE5E7EB)
+private val TextGray = Color(0xFF9CA3AF)
 private val ErrorRed = Color(0xFFef4444)
 
 private data class ModuleCard(
@@ -82,9 +86,11 @@ fun HomeScreen(
     onNavigateToBlog: () -> Unit = {},
     onNavigateToSupport: () -> Unit = {},
     onNavigateToAdminCenter: () -> Unit = {},
+    onNavigateToSettings: () -> Unit = {},
+    onNavigateToTutorial: () -> Unit = {},
+    onNavigateToNotifications: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
-    val scrollState = rememberScrollState()
     var showSuggestionsDialog by remember { mutableStateOf(false) }
     var isDarkMode by remember { mutableStateOf(true) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -95,7 +101,7 @@ fun HomeScreen(
         ModuleCard("Música", "Escucha tus canciones favoritas.", Icons.Filled.LibraryMusic, NeonBlue, onNavigateToMusic),
         ModuleCard("Juegos", "Diviértete con nuestra colección.", Icons.Filled.SportsEsports, NeonGreen, onNavigateToGames),
         ModuleCard("Estudio", "Herramientas para mejorar tu aprendizaje.", Icons.Filled.School, NeonOrange, onNavigateToStudy),
-        ModuleCard("Clima", "Revisa el pronóstico actual.", Icons.Filled.Cloud, NeonBlue, onNavigateToWeather),
+        ModuleCard("Clima", "Revisa el pronóstico actual.", Icons.Filled.Cloud, NeonCyan, onNavigateToWeather),
         ModuleCard("Blog", "Lee y comparte tus ideas.", Icons.Filled.Article, NeonPurple, onNavigateToBlog)
     )
 
@@ -111,7 +117,7 @@ fun HomeScreen(
         MenuItem("Entretenimiento", Icons.Filled.AutoAwesome, onNavigateToEntertainment),
         MenuItem("Blog", Icons.Filled.Article, onNavigateToBlog),
         MenuItem("Soporte", Icons.Filled.SupportAgent, onNavigateToSupport),
-        MenuItem("Centro de Administración General", Icons.Filled.AdminPanelSettings, onNavigateToAdminCenter, NeonPurple)
+        MenuItem("Tutorial", Icons.Filled.Info, onNavigateToTutorial)
     )
 
     ModalNavigationDrawer(
@@ -153,9 +159,7 @@ fun HomeScreen(
                                 },
                                 colors = NavigationDrawerItemDefaults.colors(
                                     unselectedContainerColor = Color.Transparent,
-                                    selectedContainerColor = Brush.horizontalGradient(
-                                        colors = listOf(NeonBlue.copy(alpha=0.3f), Color.Transparent)
-                                    ).let { Color.Transparent } // Compose doesn't support Brush in selectedContainerColor directly, so we just use transparent and build custom if needed. But for simplicity, we'll use a color
+                                    selectedContainerColor = Color.Transparent
                                 ),
                                 modifier = Modifier
                                     .padding(vertical = 2.dp)
@@ -215,7 +219,7 @@ fun HomeScreen(
                         IconButton(onClick = { showSuggestionsDialog = true }) {
                             Icon(Icons.Filled.HelpOutline, contentDescription = "Ayuda / Sugerencias", tint = TextGray)
                         }
-                        IconButton(onClick = { /* Configuraciones */ }) {
+                        IconButton(onClick = onNavigateToSettings) {
                             Icon(Icons.Filled.Settings, contentDescription = "Configuración", tint = TextGray)
                         }
                     }
@@ -238,7 +242,7 @@ fun HomeScreen(
                         }
                     },
                     actions = {
-                        IconButton(onClick = { /* Notificaciones */ }) {
+                        IconButton(onClick = onNavigateToNotifications) {
                             Icon(Icons.Filled.NotificationsNone, contentDescription = "Notificaciones", tint = TextWhite)
                         }
                         IconButton(onClick = { isDarkMode = !isDarkMode }) {
@@ -256,7 +260,7 @@ fun HomeScreen(
                 )
             }
         ) { paddingValues ->
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
@@ -266,118 +270,67 @@ fun HomeScreen(
                     )
                     .padding(paddingValues)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                        .padding(horizontal = 16.dp)
+                val isCompact = maxWidth < 600.dp
+                
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 160.dp),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Main Banner
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(CardBg)
-                            .padding(24.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "Bienvenido a MiniAmigixV",
-                                fontSize = 26.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = NeonBlue,
-                                textAlign = TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Tu espacio personal interactivo",
-                                fontSize = 16.sp,
-                                color = TextGray,
-                                textAlign = TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Button(
-                                onClick = { },
-                                colors = ButtonDefaults.buttonColors(containerColor = NeonPurple),
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Icon(Icons.Filled.Download, contentDescription = null, tint = TextWhite)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Instalar App", color = TextWhite)
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Two cards row
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        // Frase del Día
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        // Main Banner
                         Box(
                             modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(20.dp))
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(24.dp))
                                 .background(CardBg)
-                                .padding(16.dp)
+                                .padding(24.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Column {
-                                Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = NeonOrange)
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text("Frase del Día", color = TextWhite, fontWeight = FontWeight.Bold)
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "Bienvenido a MiniAmigixV",
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = NeonCyan,
+                                    textAlign = TextAlign.Center
+                                )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    "\"El único modo de hacer un gran trabajo es amar lo que haces.\"",
-                                    color = TextGray, fontSize = 12.sp, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                                    text = "Tu espacio personal interactivo",
+                                    fontSize = 16.sp,
+                                    color = TextGray,
+                                    textAlign = TextAlign.Center
                                 )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text("- Steve Jobs", color = TextGray, fontSize = 10.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
-                            }
-                        }
-
-                        // Actividad
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(20.dp))
-                                .background(CardBg)
-                                .padding(16.dp)
-                        ) {
-                            Column {
-                                Text("Tu Actividad", color = TextWhite, fontWeight = FontWeight.Bold)
-                                Spacer(modifier = Modifier.height(16.dp))
-                                ActivityChart()
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    // Modules Grid
-                    modules.chunked(2).forEach { rowModules ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            rowModules.forEach { module ->
-                                ModuleCardItem(
-                                    module = module,
-                                    modifier = Modifier.weight(1f)
-                                )
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        if (isCompact) {
+                            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                                FraseDelDiaCard(Modifier.fillMaxWidth())
+                                TuActividadCard(Modifier.fillMaxWidth())
                             }
-                            if (rowModules.size == 1) {
-                                Spacer(modifier = Modifier.weight(1f))
+                        } else {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                FraseDelDiaCard(Modifier.weight(1f))
+                                TuActividadCard(Modifier.weight(1f))
                             }
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    items(modules) { module ->
+                        ModuleCardItem(
+                            module = module,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
             
@@ -387,6 +340,45 @@ fun HomeScreen(
                     onSubmit = { showSuggestionsDialog = false }
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun FraseDelDiaCard(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(CardBg)
+            .padding(16.dp)
+    ) {
+        Column {
+            Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = NeonOrange)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Frase del Día", color = TextWhite, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "\"El único modo de hacer un gran trabajo es amar lo que haces.\"",
+                color = TextGray, fontSize = 12.sp, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("- Steve Jobs", color = TextGray, fontSize = 10.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
+        }
+    }
+}
+
+@Composable
+private fun TuActividadCard(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(CardBg)
+            .padding(16.dp)
+    ) {
+        Column {
+            Text("Tu Actividad", color = TextWhite, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(16.dp))
+            ActivityChart()
         }
     }
 }
@@ -440,7 +432,7 @@ private fun ModuleCardItem(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(Color.White.copy(alpha = 0.1f)),
+                    .background(Color.White.copy(alpha = 0.05f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(module.icon, contentDescription = null, tint = module.iconColor, modifier = Modifier.size(24.dp))

@@ -7,9 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.miniamigixv.miniamigixv_app.music.data.model.Song
+import com.miniamigixv.miniamigixv_app.music.data.model.Track
 import com.miniamigixv.miniamigixv_app.music.data.player.MusicPlayerManager
 import com.miniamigixv.miniamigixv_app.music.data.repository.MusicRepository
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 data class MusicUiState(
     val currentSong: Song? = null,
@@ -20,7 +22,11 @@ data class MusicUiState(
     val isShuffleEnabled: Boolean = false,
     val isRepeatEnabled: Boolean = false,
     val playlist: List<Song> = emptyList(),
-    val currentIndex: Int = -1
+    val currentIndex: Int = -1,
+    val tracks: List<Track> = emptyList(),
+    val selectedTrackId: String? = null,
+    val currentTrackName: String = "Selecciona una pista",
+    val currentArtist: String = "Artista Desconocido"
 )
 
 class MusicViewModel(application: Application) : AndroidViewModel(application) {
@@ -34,6 +40,7 @@ class MusicViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val songs = repository.getPlaylist()
         state = state.copy(playlist = songs)
+        loadMockTracks()
 
         viewModelScope.launch {
             playerManager.getProgressFlow().collect { progress ->
@@ -45,6 +52,77 @@ class MusicViewModel(application: Application) : AndroidViewModel(application) {
                 )
             }
         }
+    }
+
+    private fun loadMockTracks() {
+        val now = System.currentTimeMillis()
+        state = state.copy(
+            tracks = listOf(
+                Track(
+                    id = "1",
+                    name = "Cosmic Journey",
+                    artist = "Neural Waves",
+                    neuralFrequency = "432 Hz",
+                    isSelected = true
+                ),
+                Track(
+                    id = "2",
+                    name = "Deep Focus",
+                    artist = "Mind Sync",
+                    neuralFrequency = "528 Hz",
+                    isSelected = false
+                ),
+                Track(
+                    id = "3",
+                    name = "Alpha Waves",
+                    artist = "Brain Harmony",
+                    neuralFrequency = "396 Hz",
+                    isSelected = false
+                ),
+                Track(
+                    id = "4",
+                    name = "Theta Meditation",
+                    artist = "Soul Frequency",
+                    neuralFrequency = "639 Hz",
+                    isSelected = false
+                )
+            ),
+            selectedTrackId = "1",
+            currentTrackName = "Cosmic Journey",
+            currentArtist = "Neural Waves"
+        )
+    }
+
+    fun selectTrack(trackId: String) {
+        val track = state.tracks.find { it.id == trackId }
+        if (track != null) {
+            state = state.copy(
+                selectedTrackId = trackId,
+                currentTrackName = track.name,
+                currentArtist = track.artist,
+                tracks = state.tracks.map { it.copy(isSelected = it.id == trackId) }
+            )
+        }
+    }
+
+    fun addTrack(name: String, artist: String, youtubeLink: String?) {
+        val newTrack = Track(
+            id = UUID.randomUUID().toString(),
+            name = name,
+            artist = artist.ifBlank { "Artista Desconocido" },
+            youtubeLink = youtubeLink,
+            neuralFrequency = "432 Hz",
+            isSelected = false
+        )
+        state = state.copy(tracks = state.tracks + newTrack)
+    }
+
+    fun deleteTrack(trackId: String) {
+        state = state.copy(tracks = state.tracks.filter { it.id != trackId })
+    }
+
+    fun searchLyricsOnGoogle() {
+        // Implementation for opening Google search with lyrics
     }
 
     fun playSong(song: Song) {
