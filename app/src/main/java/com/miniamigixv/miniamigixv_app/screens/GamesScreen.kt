@@ -1,6 +1,7 @@
 package com.miniamigixv.miniamigixv_app.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -24,17 +25,17 @@ import com.miniamigixv.miniamigixv_app.screens.data.model.Game
 import java.text.SimpleDateFormat
 import java.util.*
 
-private val BgDark = Color(0xFF0D0F16)
-private val CardBg = Color(0xFF111827)
 private val AccentPurple = Color(0xFF8B5CF6)
 private val AccentBlue = Color(0xFF3B82F6)
-private val TextGray = Color(0xFFA0A0A0)
-private val TextWhite = Color(0xFFFFFFFF)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GamesScreen(
     onBack: () -> Unit = {},
+    onNavigateToMemoriaNeon: () -> Unit = {},
+    onNavigateToRespiracionConsciente: () -> Unit = {},
+    onNavigateToSnakeNeo: () -> Unit = {},
+    onNavigateToTicTacToe: () -> Unit = {},
     gamesViewModel: GamesViewModel = viewModel()
 ) {
     val games = gamesViewModel.games
@@ -51,26 +52,26 @@ fun GamesScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BgDark)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // Top Bar
         TopAppBar(
-            title = { Text("Juegos Arena", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextWhite) },
+            title = { Text("Juegos Arena", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                 }
             },
             actions = {
                 Text(
                     currentTime.value,
                     fontSize = 14.sp,
-                    color = TextGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(end = 16.dp)
                 )
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = CardBg
+                containerColor = MaterialTheme.colorScheme.surface
             )
         )
 
@@ -84,7 +85,7 @@ fun GamesScreen(
                 Text(
                     "No hay juegos disponibles",
                     fontSize = 16.sp,
-                    color = TextGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         } else {
@@ -96,7 +97,17 @@ fun GamesScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(games) { game ->
-                    GameCard(game = game)
+                    GameCard(
+                        game = game,
+                        onClick = {
+                            when (game.id) {
+                                "3" -> onNavigateToMemoriaNeon()
+                                "8" -> onNavigateToRespiracionConsciente()
+                                "7" -> onNavigateToSnakeNeo()
+                                "9" -> onNavigateToTicTacToe()
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -104,12 +115,13 @@ fun GamesScreen(
 }
 
 @Composable
-private fun GameCard(game: Game) {
+private fun GameCard(game: Game, onClick: () -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+            .aspectRatio(1f)
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -139,7 +151,7 @@ private fun GameCard(game: Game) {
                     game.icon,
                     contentDescription = null,
                     modifier = Modifier.size(36.dp),
-                    tint = TextWhite
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
 
@@ -151,7 +163,7 @@ private fun GameCard(game: Game) {
                     game.title,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextWhite,
+                    color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
                 )
 
@@ -161,7 +173,7 @@ private fun GameCard(game: Game) {
                 Text(
                     game.description,
                     fontSize = 13.sp,
-                    color = TextGray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     lineHeight = 18.sp
                 )

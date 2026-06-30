@@ -28,15 +28,15 @@ fun SettingsScreen(onBack: () -> Unit = {}) {
     val tabs = listOf("General", "Privacidad", "Accesibilidad", "Apariencia", "Seguridad")
     val tabIcons = listOf(Icons.Filled.Settings, Icons.Filled.Lock, Icons.Filled.Accessibility, Icons.Filled.Palette, Icons.Filled.Shield)
 
-    Column(modifier = Modifier.fillMaxSize().background(BgDark)) {
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         TopAppBar(
-            title = { Text("Configuración", fontWeight = FontWeight.Bold, color = TextWhite) },
+            title = { Text("Configuración", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = CardBg)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
         )
 
         NeonHeader(title = "CONFIGURACIÓN", subtitle = "Personaliza tu experiencia y ajusta tus preferencias.")
@@ -67,7 +67,7 @@ fun SettingsScreen(onBack: () -> Unit = {}) {
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 title,
-                                color = if (selectedTab == index) NeonCyan else TextGray,
+                                color = if (selectedTab == index) NeonCyan else MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal,
                                 fontSize = 13.sp
                             )
@@ -125,8 +125,8 @@ fun SettingsScreen(onBack: () -> Unit = {}) {
                                 Icon(Icons.Filled.PhoneAndroid, contentDescription = null, tint = NeonCyan, modifier = Modifier.size(24.dp))
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Column {
-                                    Text("Este dispositivo actual", color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                                    Text("Google Chrome en Windows", color = TextGray, fontSize = 12.sp)
+                                    Text("Este dispositivo actual", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                    Text("Google Chrome en Windows", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                                     Text("Activo", color = Color(0xFF10B981), fontSize = 11.sp)
                                 }
                             }
@@ -144,7 +144,7 @@ fun SettingsScreen(onBack: () -> Unit = {}) {
                     text = "Guardar Cambios",
                     onClick = { /* TODO */ },
                     modifier = Modifier.fillMaxWidth(),
-                    icon = { Icon(Icons.Filled.Save, contentDescription = null, tint = BgDark, modifier = Modifier.size(18.dp)) }
+                    icon = { Icon(Icons.Filled.Save, contentDescription = null, tint = MaterialTheme.colorScheme.background, modifier = Modifier.size(18.dp)) }
                 )
                 Spacer(modifier = Modifier.height(32.dp))
             }
@@ -166,8 +166,8 @@ private fun SettingsSection(title: String, subtitle: String, icon: ImageVector, 
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column {
-            Text(title, color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(subtitle, color = TextGray, fontSize = 12.sp)
+            Text(title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
     }
 }
@@ -179,17 +179,17 @@ private fun SettingsToggleRow(title: String, subtitle: String, initialValue: Boo
     NeonCard(padding = 12.dp) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, color = TextWhite, fontWeight = FontWeight.Medium, fontSize = 14.sp)
-                Text(subtitle, color = TextGray, fontSize = 11.sp)
+                Text(title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Medium, fontSize = 14.sp)
+                Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
             }
             Switch(
                 checked = checked,
                 onCheckedChange = { checked = it },
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = BgDark,
+                    checkedThumbColor = MaterialTheme.colorScheme.background,
                     checkedTrackColor = NeonCyan,
-                    uncheckedThumbColor = TextGray,
-                    uncheckedTrackColor = CardBg
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surface
                 )
             )
         }
@@ -197,21 +197,21 @@ private fun SettingsToggleRow(title: String, subtitle: String, initialValue: Boo
 }
 
 @Composable
-private fun SettingsClickRow(title: String, subtitle: String, value: String, valueColor: Color = TextWhite) {
+private fun SettingsClickRow(title: String, subtitle: String, value: String, valueColor: Color = MaterialTheme.colorScheme.onBackground) {
     NeonCard(padding = 12.dp) {
         Row(
             modifier = Modifier.fillMaxWidth().clickable { },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(title, color = TextWhite, fontWeight = FontWeight.Medium, fontSize = 14.sp)
-                Text(subtitle, color = TextGray, fontSize = 11.sp)
+                Text(title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Medium, fontSize = 14.sp)
+                Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
             }
             if (value.isNotEmpty()) {
                 Text(value, color = valueColor, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                 Spacer(modifier = Modifier.width(4.dp))
             }
-            Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = TextGray, modifier = Modifier.size(20.dp))
+            Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp))
         }
     }
 }

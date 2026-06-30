@@ -27,7 +27,7 @@ fun SuggestionsBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = CardBg,
+        containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
     ) {
         Column(
@@ -39,7 +39,7 @@ fun SuggestionsBottomSheet(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Lightbulb, contentDescription = null, tint = NeonCyan, modifier = Modifier.size(24.dp))
                 Spacer(modifier = Modifier.width(12.dp))
-                Text("Sugerencias", color = TextWhite, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Sugerencias", color = MaterialTheme.colorScheme.onBackground, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -67,7 +67,7 @@ fun SuggestionsBottomSheet(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Priority selector
-            Text("Prioridad", color = TextGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text("Prioridad", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf("Baja", "Media", "Alta").forEach { p ->
@@ -86,7 +86,7 @@ fun SuggestionsBottomSheet(
                 text = "Enviar al Admin",
                 onClick = { onDismiss() },
                 modifier = Modifier.fillMaxWidth(),
-                icon = { Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null, tint = BgDark, modifier = Modifier.size(18.dp)) }
+                icon = { Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null, tint = MaterialTheme.colorScheme.background, modifier = Modifier.size(18.dp)) }
             )
 
             Spacer(modifier = Modifier.height(24.dp))

@@ -1,5 +1,6 @@
 package com.miniamigixv.miniamigixv_app.chat.ui
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -30,19 +32,19 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.miniamigixv.miniamigixv_app.chat.data.model.ChatConversation
 import com.miniamigixv.miniamigixv_app.chat.data.model.ChatMessage
+import android.net.Uri
+import androidx.activity.result.contract.ActivityResultContracts
 
 // Colors to match the new Neon Web Chat UI
-private val BgDark = Color(0xFF050816) // Solid dark background for the chat area
-private val CardBg = Color(0xFF111827) // Dark gray/blue for sidebar
 private val UserBubble = Color(0xFF1E3A8A) // Dark blue for user
 private val AIBubble = Color(0xFF111827) // Dark gray/blue for AI
 private val UserAvatar = Color(0xFF06B6D4) // Cyan avatar
 private val AIAvatar = Color(0xFF8B5CF6) // Purple avatar
 private val InputBg = Color(0xFF111827) // Very dark input background
-private val TextWhite = Color(0xFFE5E7EB)
-private val TextGray = Color(0xFF9CA3AF)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +58,16 @@ fun ChatScreen(
     val state = chatViewModel.uiState
     val inputText = chatViewModel.inputText
     val listState = rememberLazyListState()
+    var showEmojiPicker by remember { mutableStateOf(false) }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        selectedImageUri = uri
+        uri?.let { chatViewModel.sendMessageWithImage(it) }
+    }
 
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
@@ -66,7 +78,7 @@ fun ChatScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(BgDark)
+            .background(MaterialTheme.colorScheme.background)
             .imePadding() // CRITICAL: So keyboard doesn't overlap input bar
     ) {
         val isCompact = maxWidth < 600.dp
@@ -84,7 +96,7 @@ fun ChatScreen(
                     modifier = Modifier
                         .width(if (isCompact) 280.dp else 320.dp)
                         .fillMaxHeight()
-                        .background(CardBg)
+                        .background(MaterialTheme.colorScheme.surface)
                         .border(1.dp, Color.White.copy(alpha = 0.05f))
                 ) {
                     // Sidebar Header
@@ -99,10 +111,10 @@ fun ChatScreen(
                             "Chats",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                         IconButton(onClick = { chatViewModel.createNewConversation() }) {
-                            Icon(Icons.Filled.Add, contentDescription = "Nuevo chat", tint = TextWhite)
+                            Icon(Icons.Filled.Add, contentDescription = "Nuevo chat", tint = MaterialTheme.colorScheme.onBackground)
                         }
                     }
 
@@ -139,36 +151,36 @@ fun ChatScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             if (isCompact) {
                                 IconButton(onClick = { showSidebar = !showSidebar }) {
-                                    Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = TextWhite)
+                                    Icon(Icons.Filled.Menu, contentDescription = "Menu", tint = MaterialTheme.colorScheme.onBackground)
                                 }
                             }
-                            Text("Chat / ", color = TextGray, fontSize = 16.sp)
+                            Text("Chat / ", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 16.sp)
                             val selectedChat = conversations.find { it.id == selectedConversationId }
                             Text(
                                 selectedChat?.name ?: "Chat Principal",
                                 fontSize = 18.sp,
-                                color = TextWhite,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 fontWeight = FontWeight.Bold
                             )
                         }
                     },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                         }
                     },
                     actions = {
                         if (messages.isNotEmpty()) {
                             IconButton(onClick = { chatViewModel.clearMessages() }) {
-                                Icon(Icons.Filled.DeleteSweep, contentDescription = "Limpiar chat", tint = TextWhite)
+                                Icon(Icons.Filled.DeleteSweep, contentDescription = "Limpiar chat", tint = MaterialTheme.colorScheme.onBackground)
                             }
                         }
                         IconButton(onClick = { /* Settings */ }) {
-                            Icon(Icons.Filled.Settings, contentDescription = "Configuración", tint = TextWhite)
+                            Icon(Icons.Filled.Settings, contentDescription = "Configuración", tint = MaterialTheme.colorScheme.onBackground)
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = CardBg
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
                 )
 
@@ -221,12 +233,12 @@ fun ChatScreen(
                                 Icons.Filled.SmartToy,
                                 contentDescription = null,
                                 modifier = Modifier.size(72.dp),
-                                tint = TextWhite.copy(alpha = 0.2f)
+                                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 "Inicia una conversación con MiniAmigixV",
-                                color = TextWhite.copy(alpha = 0.5f),
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -251,7 +263,7 @@ fun ChatScreen(
 
                 // Bottom Input Bar
                 Surface(
-                    color = BgDark,
+                    color = MaterialTheme.colorScheme.background,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -275,9 +287,11 @@ fun ChatScreen(
                                 value = inputText,
                                 onValueChange = chatViewModel::updateInputText,
                                 modifier = Modifier.fillMaxWidth(),
-                                placeholder = { Text("Escribe un mensaje...", color = TextGray) },
+                                placeholder = { Text("Escribe un mensaje...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                                 leadingIcon = {
-                                    Icon(Icons.Filled.EmojiEmotions, contentDescription = "Emoji", tint = Color(0xFFF59E0B))
+                                    IconButton(onClick = { showEmojiPicker = !showEmojiPicker }) {
+                                        Icon(Icons.Filled.EmojiEmotions, contentDescription = "Emoji", tint = Color(0xFFF59E0B))
+                                    }
                                 },
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                                 keyboardActions = KeyboardActions(
@@ -287,8 +301,8 @@ fun ChatScreen(
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = Color.Transparent,
                                     unfocusedBorderColor = Color.Transparent,
-                                    focusedTextColor = TextWhite,
-                                    unfocusedTextColor = TextWhite,
+                                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
                                     cursorColor = Color(0xFF3B82F6)
                                 )
                             )
@@ -296,9 +310,14 @@ fun ChatScreen(
 
                         Spacer(modifier = Modifier.width(8.dp))
 
+                        // Photo Icon
+                        IconButton(onClick = { photoPickerLauncher.launch("image/*") }) {
+                            Icon(Icons.Filled.Image, contentDescription = "Foto", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+
                         // Voice / Audio Icon
                         IconButton(onClick = { /* Voice message */ }) {
-                            Icon(Icons.Filled.VolumeUp, contentDescription = "Audio", tint = TextGray)
+                            Icon(Icons.Filled.VolumeUp, contentDescription = "Audio", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
 
                         // Send Button
@@ -361,17 +380,33 @@ private fun ChatBubbleWithAvatar(message: ChatMessage, screenWidth: Dp) {
             modifier = Modifier.widthIn(max = screenWidth * maxWidthFraction)
         ) {
             Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
-                Text(
-                    text = message.text,
-                    fontSize = 15.sp,
-                    color = TextWhite,
-                    lineHeight = 20.sp
-                )
-                Spacer(modifier = Modifier.height(4.dp))
+                message.imageUrl?.let { imageUrl ->
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Imagen del mensaje",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+                if (message.text.isNotEmpty()) {
+                    Text(
+                        text = message.text,
+                        fontSize = 15.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        lineHeight = 20.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
                 Text(
                     text = formatTimestamp(message.timestamp),
                     fontSize = 10.sp,
-                    color = TextWhite.copy(alpha = 0.5f),
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                     modifier = Modifier.align(Alignment.End)
                 )
             }
@@ -476,7 +511,7 @@ private fun ConversationItem(
                 text = conversation.name,
                 fontSize = 15.sp,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                color = TextWhite,
+                color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -484,7 +519,7 @@ private fun ConversationItem(
             Text(
                 text = conversation.lastMessage,
                 fontSize = 13.sp,
-                color = TextGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -496,7 +531,7 @@ private fun ConversationItem(
             Text(
                 text = formatTimestamp(conversation.timestamp),
                 fontSize = 11.sp,
-                color = TextGray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             if (conversation.unreadCount > 0) {
                 Spacer(modifier = Modifier.height(4.dp))
@@ -522,4 +557,66 @@ private fun ConversationItem(
 private fun formatTimestamp(timestamp: Long): String {
     val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
     return sdf.format(java.util.Date(timestamp))
+}
+
+@Composable
+private fun EmojiPicker(
+    onEmojiSelected: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val commonEmojis = listOf(
+        "😀", "😂", "😍", "🥰", "😎", "🤔", "😢", "😡",
+        "👍", "👎", "❤️", "💔", "🔥", "⭐", "🎉", "🎈",
+        "🌟", "💯", "✨", "💪", "🙏", "👋", "🤝", "👏",
+        "🎵", "🎶", "☀️", "🌈", "🌸", "🍕", "🍔", "☕"
+    )
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = InputBg,
+        tonalElevation = 8.dp
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Emojis",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+                IconButton(onClick = onDismiss) {
+                    Icon(Icons.Filled.Close, contentDescription = "Cerrar", tint = MaterialTheme.colorScheme.onBackground)
+                }
+            }
+            Divider(color = Color.White.copy(alpha = 0.1f))
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                items(commonEmojis.chunked(8)) { rowEmojis ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        rowEmojis.forEach { emoji ->
+                            Text(
+                                text = emoji,
+                                fontSize = 32.sp,
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .clickable { onEmojiSelected(emoji) }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

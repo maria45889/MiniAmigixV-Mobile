@@ -40,7 +40,7 @@ fun WeatherScreen(
     val query = weatherViewModel.searchQuery
     val focusManager = LocalFocusManager.current
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(BgDark)) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         val isCompact = maxWidth < 600.dp
 
         Column(
@@ -49,13 +49,13 @@ fun WeatherScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             TopAppBar(
-                title = { Text("CLIMA", fontWeight = FontWeight.Bold, color = TextWhite) },
+                title = { Text("CLIMA", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = CardBg)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
 
             Column(
@@ -70,12 +70,12 @@ fun WeatherScreen(
                         value = query,
                         onValueChange = weatherViewModel::updateSearchQuery,
                         modifier = Modifier.weight(1f).height(56.dp),
-                        placeholder = { Text("Buscar ciudad...", color = TextGray) },
+                        placeholder = { Text("Buscar ciudad...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = NeonPurple,
-                            unfocusedBorderColor = TextGray,
-                            focusedTextColor = TextWhite,
-                            unfocusedTextColor = TextWhite
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                         ),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -93,7 +93,7 @@ fun WeatherScreen(
                         modifier = Modifier.height(56.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = NeonCyan)
                     ) {
-                        Icon(Icons.Filled.LocationOn, contentDescription = null, tint = BgDark)
+                        Icon(Icons.Filled.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.background)
                     }
                 }
 
@@ -103,7 +103,7 @@ fun WeatherScreen(
                             modifier = Modifier.fillMaxWidth().height(300.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Busca una ciudad para ver el clima", color = TextGray)
+                            Text("Busca una ciudad para ver el clima", color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     is WeatherUiState.Loading -> {
@@ -165,13 +165,13 @@ private fun MainWeatherCard(data: WeatherData) {
                 "${data.temperature.toInt()}°C",
                 fontSize = 72.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextWhite
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 data.city.uppercase(),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextWhite,
+                color = MaterialTheme.colorScheme.onBackground,
                 letterSpacing = 2.sp
             )
             Text(
@@ -200,14 +200,14 @@ private fun DetailBox(modifier: Modifier, label: String, value: String, icon: an
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(CardBg)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
         Column {
             Icon(icon, contentDescription = null, tint = NeonCyan, modifier = Modifier.size(24.dp))
             Spacer(modifier = Modifier.height(12.dp))
-            Text(value, color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            Text(label, color = TextGray, fontSize = 12.sp)
+            Text(value, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
     }
 }
@@ -267,7 +267,7 @@ private fun RadarCard() {
         
         Spacer(modifier = Modifier.height(16.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("ANOMALÍA DETECTADA", color = TextGray, fontSize = 10.sp)
+            Text("ANOMALÍA DETECTADA", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp)
             Text("0.04%", color = NeonCyan, fontSize = 10.sp)
         }
     }
@@ -276,7 +276,7 @@ private fun RadarCard() {
 @Composable
 private fun ForecastCard() {
     NeonCard {
-        Text("PRONÓSTICO", color = TextGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text("PRONÓSTICO", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -292,10 +292,10 @@ private fun ForecastCard() {
 @Composable
 private fun ForecastItem(day: String, icon: androidx.compose.ui.graphics.vector.ImageVector, temp: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(day, color = TextWhite, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text(day, color = MaterialTheme.colorScheme.onBackground, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
-        Icon(icon, contentDescription = null, tint = TextGray, modifier = Modifier.size(24.dp))
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(24.dp))
         Spacer(modifier = Modifier.height(8.dp))
-        Text(temp, color = TextWhite, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(temp, color = MaterialTheme.colorScheme.onBackground, fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
 }

@@ -27,18 +27,18 @@ fun TranslatorScreen(onBack: () -> Unit = {}) {
     var isTranslating by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(BgDark)) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         val isCompact = maxWidth < 600.dp
 
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
-                title = { Text("Traductor", fontWeight = FontWeight.Bold, color = TextWhite) },
+                title = { Text("Traductor", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = CardBg)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
 
             LazyColumn(
@@ -137,26 +137,26 @@ private fun LanguageDropdown(selected: String) {
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(selected, color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+        Text(selected, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 14.sp)
         Spacer(modifier = Modifier.width(4.dp))
-        Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = TextGray)
+        Icon(Icons.Filled.ArrowDropDown, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
 @Composable
 private fun TranslatorInputBox(title: String, text: String, placeholder: String, onValueChange: (String) -> Unit) {
     Column {
-        Text(title, color = TextGray, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+        Text(title, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, fontWeight = FontWeight.Bold)
         OutlinedTextField(
             value = text,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth().height(150.dp),
-            placeholder = { Text(placeholder, color = TextGray) },
+            placeholder = { Text(placeholder, color = MaterialTheme.colorScheme.onSurfaceVariant) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                focusedTextColor = TextWhite,
-                unfocusedTextColor = TextWhite
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
             )
         )
     }
@@ -165,18 +165,18 @@ private fun TranslatorInputBox(title: String, text: String, placeholder: String,
 @Composable
 private fun TranslatorOutputBox(title: String, text: String, placeholder: String) {
     Column {
-        Text(title, color = TextGray, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+        Text(title, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, fontWeight = FontWeight.Bold)
         OutlinedTextField(
             value = text,
             onValueChange = {},
             readOnly = true,
             modifier = Modifier.fillMaxWidth().height(150.dp),
-            placeholder = { Text(placeholder, color = TextGray) },
+            placeholder = { Text(placeholder, color = MaterialTheme.colorScheme.onSurfaceVariant) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                focusedTextColor = TextWhite,
-                unfocusedTextColor = TextWhite
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
             )
         )
     }
@@ -189,9 +189,9 @@ private fun TranslateButton(isTranslating: Boolean, onClick: () -> Unit) {
         onClick = onClick,
         icon = {
             if (isTranslating) {
-                CircularProgressIndicator(modifier = Modifier.size(20.dp), color = BgDark, strokeWidth = 2.dp)
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), color = MaterialTheme.colorScheme.background, strokeWidth = 2.dp)
             } else {
-                Icon(Icons.Filled.Bolt, contentDescription = null, tint = BgDark)
+                Icon(Icons.Filled.Bolt, contentDescription = null, tint = MaterialTheme.colorScheme.background)
             }
         }
     )
@@ -200,7 +200,7 @@ private fun TranslateButton(isTranslating: Boolean, onClick: () -> Unit) {
 @Composable
 private fun StatusBox(modifier: Modifier, label: String, value: String, color: Color) {
     NeonCard(modifier = modifier) {
-        Text(label, color = TextGray, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(4.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.FiberManualRecord, contentDescription = null, tint = color, modifier = Modifier.size(10.dp))
@@ -238,7 +238,7 @@ private fun HistoryItem(original: String, translated: String) {
     ) {
         Text("[ESPAÑOL -> INGLÉS]", color = NeonPurple, fontSize = 10.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(original, color = TextWhite, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Text(original, color = MaterialTheme.colorScheme.onBackground, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         Text(translated, color = NeonCyan, fontSize = 14.sp)
     }
 }

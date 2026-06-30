@@ -39,20 +39,13 @@ import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.launch
 import com.miniamigixv.miniamigixv_app.R
 
-// Dark Neon Theme Colors
-private val BgDark1 = Color(0xFF050816)
-private val BgDark2 = Color(0xFF070B1A)
-private val BgDark3 = Color(0xFF050816)
-private val CardBg = Color(0xFF111827)
-private val DialogBg = Color(0xFF111827)
+// Neon accent colors
 private val NeonPurple = Color(0xFF8B5CF6)
 private val NeonBlue = Color(0xFF3b82f6)
 private val NeonCyan = Color(0xFF22D3EE)
 private val NeonPink = Color(0xFFec4899)
 private val NeonGreen = Color(0xFF10b981)
 private val NeonOrange = Color(0xFFf59e0b)
-private val TextWhite = Color(0xFFE5E7EB)
-private val TextGray = Color(0xFF9CA3AF)
 private val ErrorRed = Color(0xFFef4444)
 
 private data class ModuleCard(
@@ -67,7 +60,7 @@ private data class MenuItem(
     val title: String,
     val icon: ImageVector,
     val onClick: () -> Unit,
-    val color: Color = TextWhite
+    val color: Color = Color.Unspecified
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -124,7 +117,7 @@ fun HomeScreen(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(
-                drawerContainerColor = BgDark1,
+                drawerContainerColor = MaterialTheme.colorScheme.background,
                 modifier = Modifier.width(300.dp)
             ) {
                 Column(
@@ -203,7 +196,7 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(24.dp))
                     }
                     
-                    Divider(color = CardBg)
+                    Divider(color = MaterialTheme.colorScheme.surface)
                     
                     // Bottom icons row
                     Row(
@@ -214,13 +207,13 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = onNavigateToProfile) {
-                            Icon(Icons.Filled.PersonOutline, contentDescription = "Perfil", tint = TextGray)
+                            Icon(Icons.Filled.PersonOutline, contentDescription = "Perfil", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         IconButton(onClick = { showSuggestionsDialog = true }) {
-                            Icon(Icons.Filled.HelpOutline, contentDescription = "Ayuda / Sugerencias", tint = TextGray)
+                            Icon(Icons.Filled.HelpOutline, contentDescription = "Ayuda / Sugerencias", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         IconButton(onClick = onNavigateToSettings) {
-                            Icon(Icons.Filled.Settings, contentDescription = "Configuración", tint = TextGray)
+                            Icon(Icons.Filled.Settings, contentDescription = "Configuración", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -233,29 +226,29 @@ fun HomeScreen(
                     title = { 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("MiniAmigixV", color = NeonPurple, fontWeight = FontWeight.Bold)
-                            Text(" / Inicio", color = TextGray, fontSize = 16.sp)
+                            Text(" / Inicio", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 16.sp)
                         }
                     },
                     navigationIcon = {
                         IconButton(onClick = { coroutineScope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menú", tint = TextWhite)
+                            Icon(Icons.Default.Menu, contentDescription = "Menú", tint = MaterialTheme.colorScheme.onBackground)
                         }
                     },
                     actions = {
                         IconButton(onClick = onNavigateToNotifications) {
-                            Icon(Icons.Filled.NotificationsNone, contentDescription = "Notificaciones", tint = TextWhite)
+                            Icon(Icons.Filled.NotificationsNone, contentDescription = "Notificaciones", tint = MaterialTheme.colorScheme.onBackground)
                         }
                         IconButton(onClick = { isDarkMode = !isDarkMode }) {
                             Icon(
                                 if (isDarkMode) Icons.Filled.DarkMode else Icons.Filled.LightMode, 
                                 contentDescription = "Cambiar Tema", 
-                                tint = TextWhite
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = BgDark1,
-                        titleContentColor = TextWhite
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
                     )
                 )
             }
@@ -263,11 +256,7 @@ fun HomeScreen(
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(BgDark1, BgDark2, BgDark3)
-                        )
-                    )
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(paddingValues)
             ) {
                 val isCompact = maxWidth < 600.dp
@@ -285,7 +274,7 @@ fun HomeScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(24.dp))
-                                .background(CardBg)
+                                .background(MaterialTheme.colorScheme.surface)
                                 .padding(24.dp),
                             contentAlignment = Alignment.Center
                         ) {
@@ -301,7 +290,7 @@ fun HomeScreen(
                                 Text(
                                     text = "Tu espacio personal interactivo",
                                     fontSize = 16.sp,
-                                    color = TextGray,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center
                                 )
                             }
@@ -349,20 +338,20 @@ private fun FraseDelDiaCard(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(CardBg)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
         Column {
             Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = NeonOrange)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Frase del Día", color = TextWhite, fontWeight = FontWeight.Bold)
+            Text("Frase del Día", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 "\"El único modo de hacer un gran trabajo es amar lo que haces.\"",
-                color = TextGray, fontSize = 12.sp, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text("- Steve Jobs", color = TextGray, fontSize = 10.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
+            Text("- Steve Jobs", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
         }
     }
 }
@@ -372,11 +361,11 @@ private fun TuActividadCard(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(CardBg)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
         Column {
-            Text("Tu Actividad", color = TextWhite, fontWeight = FontWeight.Bold)
+            Text("Tu Actividad", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
             ActivityChart()
         }
@@ -423,7 +412,7 @@ private fun ModuleCardItem(
         modifier = modifier
             .scale(scale)
             .clip(RoundedCornerShape(20.dp))
-            .background(CardBg)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable(interactionSource = interactionSource, indication = null, onClick = module.onClick)
             .padding(16.dp)
     ) {
@@ -438,9 +427,9 @@ private fun ModuleCardItem(
                 Icon(module.icon, contentDescription = null, tint = module.iconColor, modifier = Modifier.size(24.dp))
             }
             Spacer(modifier = Modifier.height(12.dp))
-            Text(module.title, color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(module.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(module.description, color = TextGray, fontSize = 12.sp, lineHeight = 16.sp)
+            Text(module.description, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 16.sp)
         }
     }
 }
@@ -457,7 +446,7 @@ private fun NeonSuggestionsDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(DialogBg)
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(20.dp)
         ) {
             Column {
@@ -475,7 +464,7 @@ private fun NeonSuggestionsDialog(
                         modifier = Modifier.weight(1f)
                     )
                     IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
-                        Icon(Icons.Filled.Close, contentDescription = "Cerrar", tint = TextWhite)
+                        Icon(Icons.Filled.Close, contentDescription = "Cerrar", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 }
                 
@@ -502,7 +491,7 @@ private fun NeonSuggestionsDialog(
                             placeholder = { 
                                 Text(
                                     "¿Cómo podemos mejorar MiniAmigixV?",
-                                    color = TextGray.copy(alpha=0.6f),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.6f),
                                     fontSize = 14.sp
                                 )
                             },
@@ -510,8 +499,8 @@ private fun NeonSuggestionsDialog(
                                 focusedBorderColor = Color.Transparent,
                                 unfocusedBorderColor = Color.Transparent,
                                 cursorColor = NeonCyan,
-                                focusedTextColor = TextWhite,
-                                unfocusedTextColor = TextWhite,
+                                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
                                 focusedContainerColor = Color.Transparent,
                                 unfocusedContainerColor = Color.Transparent
                             ),
@@ -568,7 +557,7 @@ private fun NeonSuggestionsDialog(
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Enviar al Admin", color = TextWhite, fontWeight = FontWeight.Bold)
+                        Text("Enviar al Admin", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold)
                     }
                 }
             }

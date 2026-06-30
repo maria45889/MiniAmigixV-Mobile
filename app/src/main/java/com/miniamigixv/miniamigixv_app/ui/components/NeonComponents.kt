@@ -18,12 +18,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-val BgDark = Color(0xFF050816)
-val CardBg = Color(0xFF111827)
 val NeonPurple = Color(0xFF8B5CF6)
 val NeonCyan = Color(0xFF22D3EE)
-val TextWhite = Color(0xFFE5E7EB)
-val TextGray = Color(0xFF9CA3AF)
 
 @Composable
 fun NeonCard(
@@ -33,7 +29,7 @@ fun NeonCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -57,7 +53,7 @@ fun NeonBorderCard(
                 brush = Brush.linearGradient(colors = listOf(NeonPurple, NeonCyan)),
                 shape = RoundedCornerShape(16.dp)
             ),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -94,7 +90,7 @@ fun NeonButton(
                     icon()
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(text, color = BgDark, fontWeight = FontWeight.Bold)
+                Text(text, color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -123,7 +119,7 @@ fun NeonHeader(
             Text(
                 text = subtitle,
                 fontSize = 14.sp,
-                color = TextGray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -136,9 +132,9 @@ fun NeonChip(
     onClick: () -> Unit = {},
     icon: ImageVector? = null
 ) {
-    val bg = if (selected) NeonCyan.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.05f)
-    val borderColor = if (selected) NeonCyan else Color.Transparent
-    val textColor = if (selected) NeonCyan else TextGray
+    val bg = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+    val borderColor = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
+    val textColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
 
     Row(
         modifier = Modifier
@@ -161,7 +157,7 @@ fun NeonChip(
 fun NeonMetricCard(
     modifier: Modifier = Modifier,
     icon: ImageVector,
-    iconColor: Color = NeonCyan,
+    iconColor: Color = MaterialTheme.colorScheme.primary,
     value: String,
     label: String
 ) {
@@ -178,8 +174,8 @@ fun NeonMetricCard(
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(value, color = TextWhite, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                Text(label.uppercase(), color = TextGray, fontSize = 10.sp, letterSpacing = 1.sp)
+                Text(value, color = MaterialTheme.colorScheme.onBackground, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(label.uppercase(), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, letterSpacing = 1.sp)
             }
         }
     }
@@ -196,21 +192,21 @@ fun NeonInput(
     minHeight: Dp = 56.dp
 ) {
     Column(modifier = modifier) {
-        Text(label, color = TextGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(6.dp))
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth().heightIn(min = minHeight),
-            placeholder = { Text(placeholder, color = TextGray) },
+            placeholder = { Text(placeholder, color = MaterialTheme.colorScheme.onSurfaceVariant) },
             singleLine = singleLine,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = NeonPurple,
-                unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
-                focusedTextColor = TextWhite,
-                unfocusedTextColor = TextWhite,
-                focusedContainerColor = BgDark,
-                unfocusedContainerColor = BgDark
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface
             ),
             shape = RoundedCornerShape(8.dp)
         )

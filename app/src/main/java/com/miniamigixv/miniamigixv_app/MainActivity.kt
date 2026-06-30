@@ -10,6 +10,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,10 +25,15 @@ import com.miniamigixv.miniamigixv_app.screens.HomeScreen
 import com.miniamigixv.miniamigixv_app.screens.LoginScreen
 import com.miniamigixv.miniamigixv_app.music.ui.MusicScreen
 import com.miniamigixv.miniamigixv_app.screens.ProfileScreen
+import com.miniamigixv.miniamigixv_app.screens.EditProfileScreen
 import com.miniamigixv.miniamigixv_app.screens.RegisterScreen
 import com.miniamigixv.miniamigixv_app.screens.Screen
 import com.miniamigixv.miniamigixv_app.screens.WeatherScreen
 import com.miniamigixv.miniamigixv_app.screens.GamesScreen
+import com.miniamigixv.miniamigixv_app.games.MemoriaNeonScreen
+import com.miniamigixv.miniamigixv_app.games.RespiracionConscienteScreen
+import com.miniamigixv.miniamigixv_app.games.SnakeNeoScreen
+import com.miniamigixv.miniamigixv_app.games.TicTacToeScreen
 import com.miniamigixv.miniamigixv_app.screens.StudyScreen
 import com.miniamigixv.miniamigixv_app.screens.EventsScreen
 import com.miniamigixv.miniamigixv_app.screens.TranslatorScreen
@@ -37,9 +45,11 @@ import com.miniamigixv.miniamigixv_app.screens.TutorialScreen
 import com.miniamigixv.miniamigixv_app.screens.SettingsScreen
 import com.miniamigixv.miniamigixv_app.screens.NotificationsScreen
 import com.miniamigixv.miniamigixv_app.ui.theme.MiniAmigixV_AppTheme
+import com.miniamigixv.miniamigixv_app.ui.theme.ThemeViewModel
 
 class MainActivity : ComponentActivity() {
     private val authViewModel = AuthViewModel()
+    private val themeViewModel = ThemeViewModel()
     private var onGoogleSignInSuccess: (() -> Unit)? = null
 
     private val googleSignInLauncher = registerForActivityResult(
@@ -83,15 +93,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            MiniAmigixV_AppTheme {
-                AppNavigation(this)
+            val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+            MiniAmigixV_AppTheme(darkTheme = isDarkTheme) {
+                AppNavigation(this, themeViewModel)
             }
         }
     }
 }
 
 @Composable
-fun AppNavigation(mainActivity: MainActivity) {
+fun AppNavigation(mainActivity: MainActivity, themeViewModel: ThemeViewModel) {
     val navController = rememberNavController()
 
     NavHost(
@@ -143,10 +154,42 @@ fun AppNavigation(mainActivity: MainActivity) {
             ChatScreen(onBack = { navController.popBackStack() })
         }
         composable(Screen.Profile.route) {
-            ProfileScreen(onBack = { navController.popBackStack() })
+            ProfileScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToEdit = { navController.navigate(Screen.EditProfile.route) }
+            )
+        }
+        composable(Screen.EditProfile.route) {
+            EditProfileScreen(
+                onBack = { navController.popBackStack() },
+                onSave = { username, bio, birthdate, theme, language ->
+                    // Update theme based on selection
+                    themeViewModel.setTheme(theme == "Oscuro")
+                    // TODO: Save profile data to backend/state
+                    navController.popBackStack()
+                }
+            )
         }
         composable(Screen.Games.route) {
-            GamesScreen(onBack = { navController.popBackStack() })
+            GamesScreen(
+                onBack = { navController.popBackStack() },
+                onNavigateToMemoriaNeon = { navController.navigate(Screen.MemoriaNeon.route) },
+                onNavigateToRespiracionConsciente = { navController.navigate(Screen.RespiracionConsciente.route) },
+                onNavigateToSnakeNeo = { navController.navigate(Screen.SnakeNeo.route) },
+                onNavigateToTicTacToe = { navController.navigate(Screen.TicTacToe.route) }
+            )
+        }
+        composable(Screen.MemoriaNeon.route) {
+            MemoriaNeonScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.RespiracionConsciente.route) {
+            RespiracionConscienteScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.SnakeNeo.route) {
+            SnakeNeoScreen(onBack = { navController.popBackStack() })
+        }
+        composable(Screen.TicTacToe.route) {
+            TicTacToeScreen(onBack = { navController.popBackStack() })
         }
         composable(Screen.Study.route) {
             StudyScreen(onBack = { navController.popBackStack() })

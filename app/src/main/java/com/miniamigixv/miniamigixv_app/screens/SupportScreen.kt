@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,18 +22,18 @@ import com.miniamigixv.miniamigixv_app.ui.components.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SupportScreen(onBack: () -> Unit = {}) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(BgDark)) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         val isCompact = maxWidth < 600.dp
 
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
-                title = { Text("Centro de Soporte", fontWeight = FontWeight.Bold, color = TextWhite) },
+                title = { Text("Centro de Soporte", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = CardBg)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
 
             LazyColumn(
@@ -61,7 +62,7 @@ fun SupportScreen(onBack: () -> Unit = {}) {
                 }
 
                 item {
-                    Text("Preguntas Frecuentes", color = TextWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("Preguntas Frecuentes", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(16.dp))
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         FaqItem("¿Cómo creo mi cuenta?", "Para crear tu cuenta, ve a la sección de Inicio y presiona 'Registrarse'. Llena tus datos y estarás listo.")
@@ -91,9 +92,9 @@ private fun InfoCard(modifier: Modifier, title: String, text: String, icon: andr
     NeonCard(modifier = modifier) {
         Icon(icon, contentDescription = null, tint = NeonCyan, modifier = Modifier.size(24.dp))
         Spacer(modifier = Modifier.height(12.dp))
-        Text(title, color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text(title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text, color = TextGray, fontSize = 12.sp)
+        Text(text, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
@@ -111,18 +112,18 @@ private fun FaqItem(question: String, answer: String) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(question, color = TextWhite, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text(question, color = MaterialTheme.colorScheme.onBackground, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Icon(
                     if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
                     contentDescription = null,
-                    tint = TextGray
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             AnimatedVisibility(visible = expanded) {
                 Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
                     Divider(color = Color.White.copy(alpha = 0.1f))
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(answer, color = TextGray, fontSize = 14.sp)
+                    Text(answer, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
                 }
             }
         }
@@ -131,69 +132,122 @@ private fun FaqItem(question: String, answer: String) {
 
 @Composable
 private fun ContactForm() {
-    Text("Escríbenos", color = TextWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-    Spacer(modifier = Modifier.height(8.dp))
-    Text("¿No encontraste la respuesta? Nuestro equipo te ayudará personalmente.", color = TextGray, fontSize = 14.sp)
-    Spacer(modifier = Modifier.height(16.dp))
-
-    NeonBorderCard {
-        var name by remember { mutableStateOf("") }
-        var email by remember { mutableStateOf("") }
-        var subject by remember { mutableStateOf("") }
-        var message by remember { mutableStateOf("") }
-
-        CustomOutlinedField(name, "Tu nombre", "Ej: Juan Pérez") { name = it }
-        Spacer(modifier = Modifier.height(12.dp))
-        CustomOutlinedField(email, "Tu correo", "ejemplo@correo.com") { email = it }
-        Spacer(modifier = Modifier.height(12.dp))
-        CustomOutlinedField(subject, "Asunto", "Selecciona un asunto") { subject = it }
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        Text("Mensaje", color = TextGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-        OutlinedTextField(
-            value = message,
-            onValueChange = { message = it },
-            modifier = Modifier.fillMaxWidth().height(120.dp),
-            placeholder = { Text("Describe tu consulta con detalle...", color = TextGray) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = NeonPurple,
-                unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
-                focusedTextColor = TextWhite,
-                unfocusedTextColor = TextWhite,
-                focusedContainerColor = BgDark,
-                unfocusedContainerColor = BgDark
-            ),
-            shape = RoundedCornerShape(8.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.horizontalGradient(
+                    colors = listOf(NeonPurple, Color(0xFF3B82F6))
+                )
+            )
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Escríbenos",
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            "¿No encontraste la respuesta? Nuestro equipo te ayudará personalmente.",
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+            fontSize = 14.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         
-        NeonButton(
-            text = "Enviar mensaje",
-            onClick = { /* TODO */ },
-            modifier = Modifier.fillMaxWidth(),
-            icon = { Icon(Icons.Filled.Send, contentDescription = null, tint = BgDark, modifier = Modifier.size(18.dp)) }
+        // Contact Info Cards
+        ContactInfoCard(
+            icon = Icons.Filled.Email,
+            label = "Email",
+            value = "miniamigixv@gmail.com"
         )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        ContactInfoCard(
+            icon = Icons.Filled.Public,
+            label = "Web",
+            value = "miniamigixv.com"
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        ContactInfoCard(
+            icon = Icons.Filled.AccessTime,
+            label = "Tiempo de respuesta",
+            value = "Menos de 24 horas"
+        )
+    }
+}
+
+@Composable
+private fun ContactInfoCard(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    value: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White.copy(alpha = 0.15f), RoundedCornerShape(12.dp))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+        
+        Spacer(modifier = Modifier.width(16.dp))
+        
+        Column {
+            Text(
+                label,
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                value,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
 @Composable
 private fun CustomOutlinedField(value: String, label: String, placeholder: String, onValueChange: (String) -> Unit) {
     Column {
-        Text(label, color = TextGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(placeholder, color = TextGray) },
+            placeholder = { Text(placeholder, color = MaterialTheme.colorScheme.onSurfaceVariant) },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = NeonPurple,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
-                focusedTextColor = TextWhite,
-                unfocusedTextColor = TextWhite,
-                focusedContainerColor = BgDark,
-                unfocusedContainerColor = BgDark
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background
             ),
             shape = RoundedCornerShape(8.dp)
         )

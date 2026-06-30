@@ -28,20 +28,21 @@ import com.miniamigixv.miniamigixv_app.ui.components.*
 @Composable
 fun ProfileScreen(
     onBack: () -> Unit = {},
+    onNavigateToEdit: () -> Unit = {},
     authViewModel: AuthViewModel = viewModel()
 ) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(BgDark)) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         val isCompact = maxWidth < 600.dp
 
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
-                title = { Text("Perfil", fontWeight = FontWeight.Bold, color = TextWhite) },
+                title = { Text("Perfil", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = CardBg)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
 
             LazyColumn(
@@ -80,21 +81,21 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.width(16.dp))
 
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("Majito", color = TextWhite, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                                Text("Majito", color = MaterialTheme.colorScheme.onBackground, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Text("Sin biografía. ¡Cuéntanos de ti!", color = TextGray, fontSize = 13.sp)
+                                Text("Sin biografía. ¡Cuéntanos de ti!", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
                             }
 
                             // Edit button
                             Button(
-                                onClick = { /* TODO */ },
-                                colors = ButtonDefaults.buttonColors(containerColor = NeonCyan),
+                                onClick = onNavigateToEdit,
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                                 shape = RoundedCornerShape(8.dp)
                             ) {
-                                Icon(Icons.Filled.Edit, contentDescription = null, tint = BgDark, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Filled.Edit, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Editar", color = BgDark, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                Text("Editar", color = MaterialTheme.colorScheme.onPrimary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                             }
                         }
 
@@ -133,11 +134,11 @@ fun ProfileScreen(
                 item {
                     NeonCard {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = NeonCyan, modifier = Modifier.size(20.dp))
+                            Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 "Personaliza tu perfil añadiendo una biografía en ",
-                                color = TextGray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 13.sp
                             )
                         }

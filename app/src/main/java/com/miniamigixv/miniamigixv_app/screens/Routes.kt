@@ -9,6 +9,10 @@ sealed class Screen(val route: String) {
     data object Chat : Screen("chat")
     data object Profile : Screen("profile")
     data object Games : Screen("games")
+    data object MemoriaNeon : Screen("memoria_neon")
+    data object RespiracionConsciente : Screen("respiracion_consciente")
+    data object SnakeNeo : Screen("snake_neo")
+    data object TicTacToe : Screen("tic_tac_toe")
     data object Study : Screen("study")
     data object Events : Screen("events")
     data object Translator : Screen("translator")
@@ -19,4 +23,5 @@ sealed class Screen(val route: String) {
     data object Tutorial : Screen("tutorial")
     data object Settings : Screen("settings")
     data object Notifications : Screen("notifications")
+    data object EditProfile : Screen("edit_profile")
 }

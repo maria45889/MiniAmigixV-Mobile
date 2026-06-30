@@ -34,8 +34,8 @@ class GamesViewModel : ViewModel() {
             ),
             Game(
                 id = "3",
-                title = "Memoria",
-                description = "Encuentra los pares idénticos.",
+                title = "Memoria Neón",
+                description = "Encuentra los pares de cartas idénticas.",
                 tag = "AGILIDAD",
                 icon = Icons.Filled.GpsFixed
             ),
@@ -69,8 +69,8 @@ class GamesViewModel : ViewModel() {
             ),
             Game(
                 id = "8",
-                title = "Respiración",
-                description = "Relájate y encuentra tu centro.",
+                title = "Respiración Consciente",
+                description = "Sigue el ritmo del círculo para relajarte.",
                 tag = "MINDFULNESS",
                 icon = Icons.Filled.Spa
             ),

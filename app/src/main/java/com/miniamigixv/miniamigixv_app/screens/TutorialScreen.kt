@@ -48,15 +48,15 @@ fun TutorialScreen(onBack: () -> Unit = {}) {
         TutorialModule("Idioma y Preferencia", "Selecciona tu idioma preferido para que MiniAmigixV te hable como quieras.", Icons.Filled.Language, NeonCyan)
     )
 
-    Column(modifier = Modifier.fillMaxSize().background(BgDark)) {
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         TopAppBar(
-            title = { Text("Tutorial", fontWeight = FontWeight.Bold, color = TextWhite) },
+            title = { Text("Tutorial", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = CardBg)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
         )
 
         LazyVerticalGrid(
@@ -73,13 +73,13 @@ fun TutorialScreen(onBack: () -> Unit = {}) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text("Tutorial MiniAmigixV", color = NeonCyan, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Bienvenido 👋 aquí aprenderás a usar la app de forma interactiva.", color = TextGray, fontSize = 13.sp)
+                        Text("Bienvenido 👋 aquí aprenderás a usar la app de forma interactiva.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
                         Spacer(modifier = Modifier.height(16.dp))
                         NeonButton(
                             text = "Iniciar Guía Interactiva",
                             onClick = { /* TODO */ },
                             modifier = Modifier.fillMaxWidth(0.7f),
-                            icon = { Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = BgDark) }
+                            icon = { Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary) }
                         )
                     }
                 }
@@ -88,7 +88,7 @@ fun TutorialScreen(onBack: () -> Unit = {}) {
             // Section: Módulos principales
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("📚 Módulos principales", color = TextWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("📚 Módulos principales", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
 
             items(mainModules) { module ->
@@ -98,7 +98,7 @@ fun TutorialScreen(onBack: () -> Unit = {}) {
             // Section: Configuración
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("⚙ Configuración", color = TextWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("⚙ Configuración", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
 
             items(configModules) { module ->
@@ -125,8 +125,8 @@ private fun TutorialModuleCard(module: TutorialModule) {
             Icon(module.icon, contentDescription = null, tint = module.iconColor, modifier = Modifier.size(20.dp))
         }
         Spacer(modifier = Modifier.height(12.dp))
-        Text(module.title, color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+        Text(module.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 14.sp)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(module.description, color = TextGray, fontSize = 11.sp, lineHeight = 16.sp)
+        Text(module.description, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, lineHeight = 16.sp)
     }
 }

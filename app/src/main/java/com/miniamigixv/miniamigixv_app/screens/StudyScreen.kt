@@ -20,28 +20,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 
-private val BgDark = Color(0xFF050816)
-private val CardBg = Color(0xFF111827)
 private val NeonPurple = Color(0xFF8B5CF6)
 private val NeonCyan = Color(0xFF22D3EE)
-private val TextWhite = Color(0xFFE5E7EB)
-private val TextGray = Color(0xFF9CA3AF)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudyScreen(onBack: () -> Unit) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(BgDark)) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         val isCompact = maxWidth < 600.dp
 
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
-                title = { Text("Estudio", fontWeight = FontWeight.Bold, color = TextWhite) },
+                title = { Text("Estudio", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = CardBg)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
 
             LazyColumn(
@@ -88,14 +84,14 @@ private fun TextSummarySection() {
     
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = NeonCyan)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Resumen de Texto", color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Resumen de Texto", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
@@ -104,12 +100,12 @@ private fun TextSummarySection() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
-                placeholder = { Text("Pega aquí el texto que deseas resumir...", color = TextGray) },
+                placeholder = { Text("Pega aquí el texto que deseas resumir...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = NeonPurple,
-                    unfocusedBorderColor = TextGray,
-                    focusedTextColor = TextWhite,
-                    unfocusedTextColor = TextWhite
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -129,7 +125,7 @@ private fun TextSummarySection() {
                         .padding(vertical = 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("RESUMIR CON IA", color = BgDark, fontWeight = FontWeight.Bold)
+                    Text("RESUMIR CON IA", color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -143,14 +139,14 @@ private fun QuickNotesSection() {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.EditNote, contentDescription = null, tint = NeonPurple)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Notas Rápidas", color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Notas Rápidas", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -158,13 +154,13 @@ private fun QuickNotesSection() {
                     value = newNote,
                     onValueChange = { newNote = it },
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Escribe una nota...", color = TextGray) },
+                    placeholder = { Text("Escribe una nota...", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NeonCyan,
-                        unfocusedBorderColor = TextGray,
-                        focusedTextColor = TextWhite,
-                        unfocusedTextColor = TextWhite
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                     )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -179,7 +175,7 @@ private fun QuickNotesSection() {
                         .background(NeonPurple, RoundedCornerShape(12.dp))
                         .size(48.dp)
                 ) {
-                    Icon(Icons.Filled.Add, contentDescription = "Añadir", tint = TextWhite)
+                    Icon(Icons.Filled.Add, contentDescription = "Añadir", tint = MaterialTheme.colorScheme.onBackground)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -196,7 +192,7 @@ private fun QuickNotesSection() {
                     ) {
                         Icon(Icons.Filled.FiberManualRecord, contentDescription = null, tint = NeonCyan, modifier = Modifier.size(12.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(note, color = TextWhite, fontSize = 14.sp)
+                        Text(note, color = MaterialTheme.colorScheme.onBackground, fontSize = 14.sp)
                     }
                 }
             }
@@ -208,21 +204,21 @@ private fun QuickNotesSection() {
 private fun MiniCalendarSection() {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Icon(Icons.Filled.CalendarMonth, contentDescription = null, tint = NeonCyan)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Calendario", color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Calendario", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
             Spacer(modifier = Modifier.height(16.dp))
             Text("Octubre 2026", color = NeonPurple, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 listOf("L", "M", "M", "J", "V", "S", "D").forEach { day ->
-                    Text(day, color = TextGray, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text(day, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -236,7 +232,7 @@ private fun MiniCalendarSection() {
                             .background(if (index == 2) NeonPurple else Color.Transparent),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(day, color = if (index == 2) TextWhite else TextGray, fontSize = 14.sp)
+                        Text(day, color = if (index == 2) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
                     }
                 }
             }
@@ -261,14 +257,14 @@ private fun TimerSection() {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Icon(Icons.Filled.Timer, contentDescription = null, tint = NeonPurple)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Cronómetro", color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Cronómetro", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
             Spacer(modifier = Modifier.height(16.dp))
             
@@ -286,14 +282,14 @@ private fun TimerSection() {
                     onClick = { isRunning = !isRunning },
                     colors = ButtonDefaults.buttonColors(containerColor = NeonPurple)
                 ) {
-                    Text(if (isRunning) "Pausar" else "Iniciar", color = TextWhite)
+                    Text(if (isRunning) "Pausar" else "Iniciar", color = MaterialTheme.colorScheme.onBackground)
                 }
                 OutlinedButton(
                     onClick = { 
                         isRunning = false
                         seconds = 0
                     },
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = TextWhite)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
                 ) {
                     Text("Reset")
                 }
@@ -308,7 +304,7 @@ private fun HistorySection() {
     
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -318,15 +314,15 @@ private fun HistorySection() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.History, contentDescription = null, tint = TextGray)
+                    Icon(Icons.Filled.History, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Historial de Estudio", color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text("Historial de Estudio", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 }
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
                         if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
                         contentDescription = "Expandir",
-                        tint = TextWhite
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
@@ -334,7 +330,7 @@ private fun HistorySection() {
             AnimatedVisibility(visible = expanded) {
                 Column(modifier = Modifier.padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("Resumen: Fotosíntesis", "Resumen: Revolución Francesa", "Sesión de estudio: 45 min").forEach { item ->
-                        Text(item, color = TextGray, fontSize = 14.sp)
+                        Text(item, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
                         Divider(color = Color.White.copy(alpha = 0.05f))
                     }
                 }

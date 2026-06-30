@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val NeonColorScheme = darkColorScheme(
+private val DarkNeonColorScheme = darkColorScheme(
     primary = NeonViolet,
     onPrimary = DarkOnSurface,
     primaryContainer = DarkPrimaryContainer,
@@ -38,20 +38,46 @@ private val NeonColorScheme = darkColorScheme(
     onErrorContainer = OnErrorContainer
 )
 
+private val LightNeonColorScheme = lightColorScheme(
+    primary = NeonViolet,
+    onPrimary = LightOnSurface,
+    primaryContainer = LightPrimaryContainer,
+    onPrimaryContainer = LightOnPrimaryContainer,
+    secondary = NeonBlue,
+    onSecondary = LightOnBackground,
+    secondaryContainer = LightSecondaryContainer,
+    onSecondaryContainer = LightOnSecondaryContainer,
+    tertiary = NeonVioletLighter,
+    onTertiary = LightOnBackground,
+    tertiaryContainer = LightTertiaryContainer,
+    onTertiaryContainer = LightOnTertiaryContainer,
+    background = LightBackground,
+    onBackground = LightOnBackground,
+    surface = LightSurface,
+    onSurface = LightOnSurface,
+    surfaceVariant = LightSurfaceVariant,
+    onSurfaceVariant = LightOnSurfaceVariant,
+    outline = LightOutline,
+    outlineVariant = LightOutlineVariant,
+    error = ErrorRed,
+    onError = OnError,
+    errorContainer = ErrorContainer,
+    onErrorContainer = OnErrorContainer
+)
+
 @Composable
 fun MiniAmigixV_AppTheme(
-    // Always force dark neon theme to match the login screen aesthetics
     darkTheme: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = NeonColorScheme
+    val colorScheme = if (darkTheme) DarkNeonColorScheme else LightNeonColorScheme
 
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 

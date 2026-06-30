@@ -1,5 +1,6 @@
 package com.miniamigixv.miniamigixv_app.chat.ui
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -64,6 +65,41 @@ class ChatViewModel : ViewModel() {
 
         sendMessageInternal(text)
         inputText = ""
+    }
+
+    fun sendMessageWithImage(imageUri: Uri) {
+        val text = inputText.trim()
+        val userMessage = ChatMessage(
+            id = UUID.randomUUID().toString(),
+            text = text,
+            isUser = true,
+            timestamp = System.currentTimeMillis(),
+            imageUrl = imageUri.toString()
+        )
+
+        messages = messages + userMessage
+        uiState = ChatUiState.Sending
+        inputText = ""
+
+        viewModelScope.launch {
+            val result = repository.sendMessage(text.ifBlank { "Imagen" }, messages)
+            result.fold(
+                onSuccess = { reply ->
+                    val botMessage = ChatMessage(
+                        id = UUID.randomUUID().toString(),
+                        text = reply,
+                        isUser = false,
+                        timestamp = System.currentTimeMillis()
+                    )
+                    messages = messages + botMessage
+                    uiState = ChatUiState.Idle
+                    lastFailedMessage = null
+                },
+                onFailure = { error ->
+                    uiState = ChatUiState.Error(error.message ?: "Error al enviar mensaje")
+                }
+            )
+        }
     }
 
     fun retryLastMessage() {

@@ -25,16 +25,16 @@ fun EntertainmentScreen(onBack: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BgDark)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         TopAppBar(
-            title = { Text("Entretenimiento", fontWeight = FontWeight.Bold, color = TextWhite) },
+            title = { Text("Entretenimiento", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = CardBg)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
         )
 
         LazyColumn(
@@ -65,8 +65,8 @@ private fun BannerSection() {
                 Icon(Icons.Filled.Movie, contentDescription = null, tint = NeonPurple, modifier = Modifier.size(32.dp))
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text("Catálogo de", color = TextGray, fontSize = 14.sp)
-                    Text("Entretenimiento", color = TextWhite, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text("Catálogo de", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
+                    Text("Entretenimiento", color = MaterialTheme.colorScheme.onBackground, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -83,7 +83,7 @@ private fun BannerSection() {
 private fun MetricItem(label: String, value: String, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(value, color = color, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        Text(label, color = TextGray, fontSize = 12.sp)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
     }
 }
 
@@ -91,7 +91,7 @@ private fun MetricItem(label: String, value: String, color: Color) {
 private fun CategorySection() {
     Column {
         PaddingValues(horizontal = 16.dp).let {
-            Text("Explorar por categoría", color = TextWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
+            Text("Explorar por categoría", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
         }
         Spacer(modifier = Modifier.height(12.dp))
         
@@ -112,13 +112,13 @@ private fun CategorySection() {
                     modifier = Modifier
                         .width(140.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(CardBg)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(16.dp)
                 ) {
                     Column {
                         Icon(category.second, contentDescription = null, tint = NeonCyan, modifier = Modifier.size(28.dp))
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(category.first, color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text(category.first, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         Text("Explorar", color = NeonPurple, fontSize = 10.sp)
                     }
                 }
@@ -133,7 +133,7 @@ private fun TrendingSection() {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 16.dp)) {
             Icon(Icons.Filled.LocalFireDepartment, contentDescription = null, tint = Color(0xFFF97316))
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Tendencias", color = TextWhite, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text("Tendencias", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.width(8.dp))
             Surface(color = Color(0xFFEF4444), shape = RoundedCornerShape(4.dp)) {
                 Text("NEW", color = Color.White, fontSize = 8.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp))
@@ -167,7 +167,7 @@ private fun TrendingSection() {
                     Column(
                         modifier = Modifier.align(Alignment.BottomStart).padding(12.dp)
                     ) {
-                        Text(item.first, color = TextWhite, fontWeight = FontWeight.Bold, fontSize = 12.sp, maxLines = 1)
+                        Text(item.first, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 12.sp, maxLines = 1)
                         Text(item.second, color = Color(0xFFFBBF24), fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     }
                 }

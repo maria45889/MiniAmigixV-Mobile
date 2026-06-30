@@ -52,12 +52,12 @@ fun NotificationsScreen(onBack: () -> Unit = {}) {
         else -> notifications
     }
 
-    Column(modifier = Modifier.fillMaxSize().background(BgDark)) {
+    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         TopAppBar(
-            title = { Text("Notificaciones", fontWeight = FontWeight.Bold, color = TextWhite) },
+            title = { Text("Notificaciones", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                 }
             },
             actions = {
@@ -65,10 +65,10 @@ fun NotificationsScreen(onBack: () -> Unit = {}) {
                     Icon(Icons.Filled.DoneAll, contentDescription = "Marcar todo leído", tint = NeonCyan)
                 }
                 IconButton(onClick = { /* Delete all */ }) {
-                    Icon(Icons.Filled.DeleteSweep, contentDescription = "Eliminar todo", tint = TextGray)
+                    Icon(Icons.Filled.DeleteSweep, contentDescription = "Eliminar todo", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = CardBg)
+            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
         )
 
         // Filter chips
@@ -126,21 +126,21 @@ private fun NotificationCard(notification: Notification) {
                     Icon(
                         Icons.Filled.Notifications,
                         contentDescription = null,
-                        tint = if (!notification.isRead) NeonCyan else TextGray,
+                        tint = if (!notification.isRead) NeonCyan else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         notification.title,
-                        color = TextWhite,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = if (!notification.isRead) FontWeight.Bold else FontWeight.Medium,
                         fontSize = 14.sp
                     )
                 }
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(notification.message, color = TextGray, fontSize = 12.sp, maxLines = 2)
+                Text(notification.message, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, maxLines = 2)
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(notification.time, color = TextGray.copy(alpha = 0.6f), fontSize = 10.sp)
+                Text(notification.time, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f), fontSize = 10.sp)
             }
 
             IconButton(onClick = { /* Delete */ }) {

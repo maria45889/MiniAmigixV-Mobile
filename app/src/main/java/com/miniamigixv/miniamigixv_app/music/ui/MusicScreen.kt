@@ -30,12 +30,8 @@ import com.miniamigixv.miniamigixv_app.music.data.model.Track
 import java.text.SimpleDateFormat
 import java.util.*
 
-private val BgDark = Color(0xFF050816)
-private val CardBg = Color(0xFF111827)
 private val AccentPurple = Color(0xFF8B5CF6)
-private val AccentBlue = Color(0xFF22D3EE) // Using Cyan as requested for Blue
-private val TextGray = Color(0xFF9CA3AF)
-private val TextWhite = Color(0xFFE5E7EB)
+private val AccentBlue = Color(0xFF22D3EE)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +53,7 @@ fun MusicScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(BgDark)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         val isCompact = maxWidth < 600.dp
 
@@ -68,22 +64,22 @@ fun MusicScreen(
         ) {
             // Top Bar
             TopAppBar(
-                title = { Text("Música", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextWhite) },
+                title = { Text("Música", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = TextWhite)
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
                     }
                 },
                 actions = {
                     Text(
                         currentTime.value,
                         fontSize = 14.sp,
-                        color = TextGray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(end = 16.dp)
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = CardBg
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
 
@@ -138,7 +134,7 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
     // Now Playing Section
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -173,7 +169,7 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
                     Icons.Filled.MusicNote,
                     contentDescription = null,
                     modifier = Modifier.size(if (isCompact) 32.dp else 48.dp),
-                    tint = TextWhite.copy(alpha = 0.7f)
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                 )
             }
 
@@ -183,14 +179,14 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
                 state.currentTrackName,
                 fontSize = if (isCompact) 16.sp else 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextWhite,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 state.currentArtist,
                 fontSize = 14.sp,
-                color = TextGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
         }
@@ -199,7 +195,7 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
     // Video Player Section
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -227,13 +223,13 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
                         Icons.Filled.PlayCircleOutline,
                         contentDescription = null,
                         modifier = Modifier.size(if (isCompact) 36.dp else 48.dp),
-                        tint = TextGray
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         "El reproductor aparecerá aquí",
                         fontSize = 14.sp,
-                        color = TextGray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -243,7 +239,7 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
     // Playback Controls
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(
@@ -254,7 +250,7 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = { /* Previous */ }) {
-                Icon(Icons.Filled.SkipPrevious, contentDescription = "Anterior", tint = TextWhite)
+                Icon(Icons.Filled.SkipPrevious, contentDescription = "Anterior", tint = MaterialTheme.colorScheme.onBackground)
             }
             Box(
                 modifier = Modifier
@@ -274,16 +270,16 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
                     Icon(
                         if (state.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                         contentDescription = "Reproducir",
-                        tint = TextWhite,
+                        tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(if (isCompact) 24.dp else 32.dp)
                     )
                 }
             }
             IconButton(onClick = { /* Next */ }) {
-                Icon(Icons.Filled.SkipNext, contentDescription = "Siguiente", tint = TextWhite)
+                Icon(Icons.Filled.SkipNext, contentDescription = "Siguiente", tint = MaterialTheme.colorScheme.onBackground)
             }
             IconButton(onClick = { /* Shuffle */ }) {
-                Icon(Icons.Filled.Shuffle, contentDescription = "Aleatorio", tint = TextGray)
+                Icon(Icons.Filled.Shuffle, contentDescription = "Aleatorio", tint = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -291,7 +287,7 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
     // Lyric Stream Section
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -308,13 +304,13 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
             Text(
                 "No encontré esta letra en la base de datos.",
                 fontSize = 14.sp,
-                color = TextGray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedButton(
                 onClick = { musicViewModel.searchLyricsOnGoogle() },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = TextWhite)
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
             ) {
                 Icon(Icons.Filled.Search, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
@@ -337,7 +333,7 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
     // Add Track Section
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -355,14 +351,14 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
             OutlinedTextField(
                 value = addTrackName,
                 onValueChange = { addTrackName = it },
-                label = { Text("Nombre de la canción", color = TextGray) },
+                label = { Text("Nombre de la canción", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = AccentPurple,
-                    unfocusedBorderColor = TextGray,
-                    focusedTextColor = TextWhite,
-                    unfocusedTextColor = TextWhite
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
@@ -371,14 +367,14 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
             OutlinedTextField(
                 value = addTrackArtist,
                 onValueChange = { addTrackArtist = it },
-                label = { Text("Artista (opcional)", color = TextGray) },
+                label = { Text("Artista (opcional)", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = AccentPurple,
-                    unfocusedBorderColor = TextGray,
-                    focusedTextColor = TextWhite,
-                    unfocusedTextColor = TextWhite
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
@@ -387,14 +383,14 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
             OutlinedTextField(
                 value = addTrackYoutube,
                 onValueChange = { addTrackYoutube = it },
-                label = { Text("YouTube Link (opcional)", color = TextGray) },
+                label = { Text("YouTube Link (opcional)", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = AccentPurple,
-                    unfocusedBorderColor = TextGray,
-                    focusedTextColor = TextWhite,
-                    unfocusedTextColor = TextWhite
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
@@ -412,7 +408,7 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
                     containerColor = AccentPurple
                 )
             ) {
-                Text("VINCULAR A LA MATRIZ", color = TextWhite, fontWeight = FontWeight.Bold)
+                Text("VINCULAR A LA MATRIZ", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -420,7 +416,7 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
     // Sound Matrix Section
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -454,7 +450,7 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
     // Music Downloader Section
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = CardBg),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -472,14 +468,14 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
             OutlinedTextField(
                 value = downloadUrl,
                 onValueChange = { downloadUrl = it },
-                label = { Text("URL de YouTube", color = TextGray) },
+                label = { Text("URL de YouTube", color = MaterialTheme.colorScheme.onSurfaceVariant) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = AccentPurple,
-                    unfocusedBorderColor = TextGray,
-                    focusedTextColor = TextWhite,
-                    unfocusedTextColor = TextWhite
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
                 )
             )
 
@@ -490,7 +486,7 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
                 OutlinedButton(
                     onClick = { expanded = true },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = TextWhite)
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onBackground)
                 ) {
                     Text(downloadFormat)
                     Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
@@ -498,11 +494,11 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    modifier = Modifier.background(CardBg)
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
                 ) {
                     formats.forEach { format ->
                         DropdownMenuItem(
-                            text = { Text(format, color = TextWhite) },
+                            text = { Text(format, color = MaterialTheme.colorScheme.onBackground) },
                             onClick = {
                                 downloadFormat = format
                                 expanded = false
@@ -521,9 +517,9 @@ private fun RightContent(state: MusicUiState, musicViewModel: MusicViewModel) {
                     containerColor = AccentBlue
                 )
             ) {
-                Icon(Icons.Filled.Download, contentDescription = null, tint = BgDark)
+                Icon(Icons.Filled.Download, contentDescription = null, tint = MaterialTheme.colorScheme.background)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("DESCARGAR", color = BgDark, fontWeight = FontWeight.Bold)
+                Text("DESCARGAR", color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -549,7 +545,7 @@ private fun TrackItem(
             onClick = onSelect,
             colors = RadioButtonDefaults.colors(
                 selectedColor = AccentPurple,
-                unselectedColor = TextGray
+                unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         )
 
@@ -560,14 +556,14 @@ private fun TrackItem(
                 text = track.name,
                 fontSize = 13.sp,
                 fontWeight = if (track.isSelected) FontWeight.Bold else FontWeight.Normal,
-                color = TextWhite,
+                color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = track.artist,
                 fontSize = 11.sp,
-                color = TextGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -589,7 +585,7 @@ private fun TrackItem(
             Icon(
                 Icons.Filled.Delete,
                 contentDescription = "Eliminar",
-                tint = TextGray,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(18.dp)
             )
         }
