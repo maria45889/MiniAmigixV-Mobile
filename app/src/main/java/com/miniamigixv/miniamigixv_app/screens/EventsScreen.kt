@@ -207,7 +207,7 @@ private fun EventListSection(events: List<Event>) {
                                 Text(event.location, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
                             }
                         }
-                        IconButton(onClick = { /* Delete event */ }) {
+                        IconButton(onClick = { eventsViewModel.deleteEvent(event.id) }) {
                             Icon(Icons.Filled.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
                         }
                     }

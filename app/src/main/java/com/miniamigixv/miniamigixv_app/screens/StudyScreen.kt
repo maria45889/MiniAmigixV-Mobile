@@ -81,6 +81,8 @@ fun StudyScreen(onBack: () -> Unit) {
 @Composable
 private fun TextSummarySection() {
     var textToSummarize by remember { mutableStateOf("") }
+    var summary by remember { mutableStateOf("") }
+    var isSummarizing by remember { mutableStateOf(false) }
     
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -110,7 +112,17 @@ private fun TextSummarySection() {
             )
             Spacer(modifier = Modifier.height(12.dp))
             Button(
-                onClick = { /* TODO */ },
+                onClick = {
+                    isSummarizing = true
+                    // Simular resumen con IA
+                    summary = if (textToSummarize.isNotBlank()) {
+                        "Resumen: ${textToSummarize.take(100)}..."
+                    } else {
+                        "Por favor ingresa algún texto para resumir."
+                    }
+                    isSummarizing = false
+                },
+                enabled = textToSummarize.isNotBlank() && !isSummarizing,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 contentPadding = PaddingValues()
@@ -125,7 +137,30 @@ private fun TextSummarySection() {
                         .padding(vertical = 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("RESUMIR CON IA", color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
+                    if (isSummarizing) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = MaterialTheme.colorScheme.background,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text("RESUMIR CON IA", color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+            if (summary.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = NeonPurple.copy(alpha = 0.1f)),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        summary,
+                        modifier = Modifier.padding(12.dp),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = 14.sp
+                    )
                 }
             }
         }

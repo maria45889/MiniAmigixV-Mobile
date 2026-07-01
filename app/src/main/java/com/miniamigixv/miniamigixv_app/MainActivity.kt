@@ -216,7 +216,7 @@ fun AppNavigation(mainActivity: MainActivity, themeViewModel: ThemeViewModel) {
             TutorialScreen(onBack = { navController.popBackStack() })
         }
         composable(Screen.Settings.route) {
-            SettingsScreen(onBack = { navController.popBackStack() })
+            SettingsScreen(onBack = { navController.popBackStack() }, themeViewModel = themeViewModel)
         }
         composable(Screen.Notifications.route) {
             NotificationsScreen(onBack = { navController.popBackStack() })

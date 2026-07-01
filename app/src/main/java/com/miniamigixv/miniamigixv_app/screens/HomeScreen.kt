@@ -407,6 +407,17 @@ private fun ModuleCardItem(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(targetValue = if (isPressed) 0.95f else 1f, label = "scale")
+    
+    // Glow animation
+    val infiniteTransition = rememberInfiniteTransition()
+    val glowAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.1f,
+        targetValue = 0.3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
 
     Box(
         modifier = modifier
@@ -419,12 +430,19 @@ private fun ModuleCardItem(
         Column(horizontalAlignment = Alignment.Start) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Color.White.copy(alpha = 0.05f)),
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(
+                                module.iconColor.copy(alpha = glowAlpha),
+                                Color.Transparent
+                            )
+                        )
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(module.icon, contentDescription = null, tint = module.iconColor, modifier = Modifier.size(24.dp))
+                Icon(module.icon, contentDescription = null, tint = module.iconColor, modifier = Modifier.size(28.dp))
             }
             Spacer(modifier = Modifier.height(12.dp))
             Text(module.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 16.sp)

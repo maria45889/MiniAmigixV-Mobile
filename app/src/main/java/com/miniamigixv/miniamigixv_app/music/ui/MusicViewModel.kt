@@ -122,7 +122,10 @@ class MusicViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun searchLyricsOnGoogle() {
-        // Implementation for opening Google search with lyrics
+        val query = "${state.currentTrackName} ${state.currentArtist} lyrics"
+        val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://www.google.com/search?q=${android.net.Uri.encode(query)}"))
+        intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+        getApplication<Application>().startActivity(intent)
     }
 
     fun playSong(song: Song) {

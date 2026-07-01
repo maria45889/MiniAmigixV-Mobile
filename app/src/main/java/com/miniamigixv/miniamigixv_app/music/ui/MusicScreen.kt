@@ -249,7 +249,7 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { /* Previous */ }) {
+            IconButton(onClick = { musicViewModel.playPrevious() }) {
                 Icon(Icons.Filled.SkipPrevious, contentDescription = "Anterior", tint = MaterialTheme.colorScheme.onBackground)
             }
             Box(
@@ -264,7 +264,7 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
                 contentAlignment = Alignment.Center
             ) {
                 IconButton(
-                    onClick = { /* Play/Pause */ },
+                    onClick = { musicViewModel.togglePlayPause() },
                     modifier = Modifier.size(playButtonSize)
                 ) {
                     Icon(
@@ -275,11 +275,15 @@ private fun LeftContent(isCompact: Boolean, state: MusicUiState, musicViewModel:
                     )
                 }
             }
-            IconButton(onClick = { /* Next */ }) {
+            IconButton(onClick = { musicViewModel.playNext() }) {
                 Icon(Icons.Filled.SkipNext, contentDescription = "Siguiente", tint = MaterialTheme.colorScheme.onBackground)
             }
-            IconButton(onClick = { /* Shuffle */ }) {
-                Icon(Icons.Filled.Shuffle, contentDescription = "Aleatorio", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            IconButton(onClick = { musicViewModel.toggleShuffle() }) {
+                Icon(
+                    Icons.Filled.Shuffle,
+                    contentDescription = "Aleatorio",
+                    tint = if (state.isShuffleEnabled) AccentPurple else MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
