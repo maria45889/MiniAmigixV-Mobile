@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -258,6 +259,7 @@ fun HomeScreen(
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
                     .padding(paddingValues)
+                    .systemBarsPadding()
             ) {
                 val isCompact = maxWidth < 600.dp
                 
@@ -408,16 +410,16 @@ private fun ModuleCardItem(
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(targetValue = if (isPressed) 0.95f else 1f, label = "scale")
     
-    // Glow animation
-    val infiniteTransition = rememberInfiniteTransition()
-    val glowAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.1f,
-        targetValue = 0.3f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
+    // Simple glow animation
+    var glowAlpha by remember { mutableStateOf(0.1f) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            glowAlpha = 0.3f
+            kotlinx.coroutines.delay(1000)
+            glowAlpha = 0.1f
+            kotlinx.coroutines.delay(1000)
+        }
+    }
 
     Box(
         modifier = modifier

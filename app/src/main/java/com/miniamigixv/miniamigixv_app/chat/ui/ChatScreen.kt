@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -37,7 +38,9 @@ import coil.request.ImageRequest
 import com.miniamigixv.miniamigixv_app.chat.data.model.ChatConversation
 import com.miniamigixv.miniamigixv_app.chat.data.model.ChatMessage
 import android.net.Uri
+import android.speech.tts.TextToSpeech
 import androidx.activity.result.contract.ActivityResultContracts
+import java.util.*
 
 // Colors to match the new Neon Web Chat UI
 private val UserBubble = Color(0xFF1E3A8A) // Dark blue for user
@@ -60,7 +63,10 @@ fun ChatScreen(
     val listState = rememberLazyListState()
     var showEmojiPicker by remember { mutableStateOf(false) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var isSpeaking by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    
+    val textToSpeech = remember { TextToSpeech(context, null) }
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -79,6 +85,7 @@ fun ChatScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
             .imePadding() // CRITICAL: So keyboard doesn't overlap input bar
     ) {
         val isCompact = maxWidth < 600.dp
@@ -316,8 +323,19 @@ fun ChatScreen(
                         }
 
                         // Voice / Audio Icon
-                        IconButton(onClick = { /* Voice message */ }) {
-                            Icon(Icons.Filled.VolumeUp, contentDescription = "Audio", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        IconButton(onClick = { 
+                            // Get last AI message and speak it
+                            val lastAIMessage = messages.lastOrNull { !it.isUser }
+                            if (lastAIMessage != null && lastAIMessage.text.isNotEmpty()) {
+                                textToSpeech.speak(lastAIMessage.text, TextToSpeech.QUEUE_FLUSH, null, null)
+                                isSpeaking = true
+                            }
+                        }) {
+                            Icon(
+                                Icons.Filled.VolumeUp,
+                                contentDescription = "Escuchar IA",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
 
                         // Send Button
@@ -340,6 +358,16 @@ fun ChatScreen(
                                 Icon(Icons.Filled.Send, contentDescription = "Enviar", tint = Color.White)
                             }
                         }
+                    }
+
+                    // Emoji Picker
+                    if (showEmojiPicker) {
+                        EmojiPicker(
+                            onEmojiSelected = { emoji ->
+                                chatViewModel.updateInputText(inputText + emoji)
+                            },
+                            onDismiss = { showEmojiPicker = false }
+                        )
                     }
                 }
             }

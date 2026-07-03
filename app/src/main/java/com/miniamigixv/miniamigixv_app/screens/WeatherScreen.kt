@@ -4,6 +4,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -40,7 +41,7 @@ fun WeatherScreen(
     val query = weatherViewModel.searchQuery
     val focusManager = LocalFocusManager.current
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).systemBarsPadding()) {
         val isCompact = maxWidth < 600.dp
 
         Column(
@@ -93,7 +94,30 @@ fun WeatherScreen(
                         modifier = Modifier.height(56.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = NeonCyan)
                     ) {
-                        Icon(Icons.Filled.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.background)
+                        Icon(Icons.Filled.Search, contentDescription = null, tint = MaterialTheme.colorScheme.background)
+                    }
+                }
+
+                // Ciudades populares
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    listOf("Bogotá", "Medellín", "Cali", "Quito").forEach { city ->
+                        OutlinedButton(
+                            onClick = {
+                                weatherViewModel.updateSearchQuery(city)
+                                weatherViewModel.searchWeather()
+                            },
+                            modifier = Modifier.height(36.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.onBackground
+                            )
+                        ) {
+                            Text(city, fontSize = 12.sp)
+                        }
                     }
                 }
 

@@ -142,10 +142,10 @@ private fun TrendingSection() {
         Spacer(modifier = Modifier.height(12.dp))
 
         val trending = listOf(
-            Pair("1. Interstellar", "★ 9.2"),
-            Pair("2. Dark", "★ 9.0"),
-            Pair("3. Inception", "★ 8.8"),
-            Pair("4. Breaking Bad", "★ 9.5")
+            Triple("Interstellar", "2014", "★ 9.2"),
+            Triple("Dark", "2017", "★ 9.0"),
+            Triple("Inception", "2010", "★ 8.8"),
+            Triple("Breaking Bad", "2008", "★ 9.5")
         )
 
         LazyRow(
@@ -156,8 +156,8 @@ private fun TrendingSection() {
                 val item = trending[index]
                 Box(
                     modifier = Modifier
-                        .width(120.dp)
-                        .height(180.dp)
+                        .width(140.dp)
+                        .height(200.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(if (index % 2 == 0) NeonPurple.copy(alpha = 0.2f) else NeonCyan.copy(alpha = 0.2f))
                 ) {
@@ -167,8 +167,9 @@ private fun TrendingSection() {
                     Column(
                         modifier = Modifier.align(Alignment.BottomStart).padding(12.dp)
                     ) {
-                        Text(item.first, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 12.sp, maxLines = 1)
-                        Text(item.second, color = Color(0xFFFBBF24), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        Text(item.first, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 13.sp, maxLines = 1)
+                        Text(item.second, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp)
+                        Text(item.third, color = Color(0xFFFBBF24), fontSize = 10.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

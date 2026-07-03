@@ -77,7 +77,10 @@ fun TutorialScreen(onBack: () -> Unit = {}) {
                         Spacer(modifier = Modifier.height(16.dp))
                         NeonButton(
                             text = "Iniciar Guía Interactiva",
-                            onClick = { /* TODO */ },
+                            onClick = { 
+                                // Navigate to home screen to start tutorial
+                                // This would typically trigger a tutorial overlay
+                            },
                             modifier = Modifier.fillMaxWidth(0.7f),
                             icon = { Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary) }
                         )

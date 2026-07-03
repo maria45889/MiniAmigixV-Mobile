@@ -58,7 +58,7 @@ fun EventsScreen(
                 if (isCompact) {
                     item { CalendarSection() }
                     item { AddEventButton(onClick = { eventsViewModel.toggleCreateEventDialog(true) }) }
-                    item { EventListSection(events) }
+                    item { EventListSection(events, eventsViewModel) }
                 } else {
                     item {
                         Row(
@@ -70,7 +70,7 @@ fun EventsScreen(
                                 AddEventButton(onClick = { eventsViewModel.toggleCreateEventDialog(true) })
                             }
                             Column(modifier = Modifier.weight(1.5f)) {
-                                EventListSection(events)
+                                EventListSection(events, eventsViewModel)
                             }
                         }
                     }
@@ -164,7 +164,7 @@ private fun AddEventButton(onClick: () -> Unit) {
 }
 
 @Composable
-private fun EventListSection(events: List<Event>) {
+private fun EventListSection(events: List<Event>, eventsViewModel: EventsViewModel) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),

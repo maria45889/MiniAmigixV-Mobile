@@ -48,6 +48,10 @@ fun StudyScreen(onBack: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
+                    HistorySection()
+                }
+
+                item {
                     TextSummarySection()
                 }
 
@@ -68,10 +72,6 @@ fun StudyScreen(onBack: () -> Unit) {
                             Box(modifier = Modifier.weight(1f)) { TimerSection() }
                         }
                     }
-                }
-
-                item {
-                    HistorySection()
                 }
             }
         }
@@ -335,7 +335,7 @@ private fun TimerSection() {
 
 @Composable
 private fun HistorySection() {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) } // Default expanded
     
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -349,7 +349,7 @@ private fun HistorySection() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.History, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Icon(Icons.Filled.History, contentDescription = null, tint = NeonCyan)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Historial de Estudio", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 }
@@ -363,10 +363,28 @@ private fun HistorySection() {
             }
             
             AnimatedVisibility(visible = expanded) {
-                Column(modifier = Modifier.padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    listOf("Resumen: Fotosíntesis", "Resumen: Revolución Francesa", "Sesión de estudio: 45 min").forEach { item ->
-                        Text(item, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
-                        Divider(color = Color.White.copy(alpha = 0.05f))
+                Column(modifier = Modifier.padding(top = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    listOf(
+                        Triple("Resumen: Fotosíntesis", "Hace 2 horas", Icons.Filled.AutoAwesome),
+                        Triple("Resumen: Revolución Francesa", "Ayer", Icons.Filled.AutoAwesome),
+                        Triple("Sesión de estudio: 45 min", "Hace 3 días", Icons.Filled.Timer),
+                        Triple("Notas: Biología Cap 4", "Hace 5 días", Icons.Filled.EditNote)
+                    ).forEach { (title, time, icon) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.White.copy(alpha = 0.05f))
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(icon, contentDescription = null, tint = NeonPurple, modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(title, color = MaterialTheme.colorScheme.onBackground, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text(time, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp)
+                            }
+                        }
                     }
                 }
             }

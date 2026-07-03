@@ -80,7 +80,21 @@ fun TranslatorScreen(onBack: () -> Unit = {}) {
                                     isTranslating = true
                                     coroutineScope.launch {
                                         delay(1500)
-                                        textOutput = "Hello world (Translated)"
+                                        // Simple translation simulation
+                                        val translations = mapOf(
+                                            "hola" to "hello",
+                                            "mundo" to "world",
+                                            "buenos días" to "good morning",
+                                            "gracias" to "thank you",
+                                            "adiós" to "goodbye",
+                                            "por favor" to "please",
+                                            "amor" to "love",
+                                            "amigo" to "friend",
+                                            "feliz" to "happy",
+                                            "triste" to "sad"
+                                        )
+                                        val lowerInput = textInput.lowercase().trim()
+                                        textOutput = translations[lowerInput] ?: translateFallback(textInput)
                                         isTranslating = false
                                     }
                                 }
@@ -104,7 +118,21 @@ fun TranslatorScreen(onBack: () -> Unit = {}) {
                                     isTranslating = true
                                     coroutineScope.launch {
                                         delay(1500)
-                                        textOutput = "Hello world (Translated)"
+                                        // Simple translation simulation
+                                        val translations = mapOf(
+                                            "hola" to "hello",
+                                            "mundo" to "world",
+                                            "buenos días" to "good morning",
+                                            "gracias" to "thank you",
+                                            "adiós" to "goodbye",
+                                            "por favor" to "please",
+                                            "amor" to "love",
+                                            "amigo" to "friend",
+                                            "feliz" to "happy",
+                                            "triste" to "sad"
+                                        )
+                                        val lowerInput = textInput.lowercase().trim()
+                                        textOutput = translations[lowerInput] ?: translateFallback(textInput)
                                         isTranslating = false
                                     }
                                 }
@@ -240,5 +268,24 @@ private fun HistoryItem(original: String, translated: String) {
         Spacer(modifier = Modifier.height(4.dp))
         Text(original, color = MaterialTheme.colorScheme.onBackground, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         Text(translated, color = NeonCyan, fontSize = 14.sp)
+    }
+}
+
+private fun translateFallback(text: String): String {
+    // Fallback translation for words not in dictionary
+    return text.split(" ").joinToString(" ") { word ->
+        when (word.lowercase()) {
+            "el", "la", "los", "las" -> "the"
+            "de" -> "of"
+            "en" -> "in"
+            "y" -> "and"
+            "que" -> "that"
+            "por" -> "for"
+            "con" -> "with"
+            "un", "una" -> "a"
+            "es" -> "is"
+            "son" -> "are"
+            else -> word // Keep original if no translation
+        }
     }
 }

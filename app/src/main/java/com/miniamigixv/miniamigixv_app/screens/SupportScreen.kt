@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.miniamigixv.miniamigixv_app.ui.components.*
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -132,6 +133,13 @@ private fun FaqItem(question: String, answer: String) {
 
 @Composable
 private fun ContactForm() {
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var message by remember { mutableStateOf("") }
+    var isSending by remember { mutableStateOf(false) }
+    var showMessage by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,21 +165,67 @@ private fun ContactForm() {
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Form fields
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            CustomOutlinedField(name, "Nombre", "Tu nombre", { name = it })
+            CustomOutlinedField(email, "Email", "tu@email.com", { email = it })
+            CustomOutlinedField(message, "Mensaje", "Describe tu problema...", { message = it })
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        Button(
+            onClick = {
+                if (name.isNotBlank() && email.isNotBlank() && message.isNotBlank()) {
+                    isSending = true
+                    // Simulate sending email
+                    coroutineScope.launch {
+                        kotlinx.coroutines.delay(2000)
+                        isSending = false
+                        showMessage = true
+                        name = ""
+                        email = ""
+                        message = ""
+                    }
+                }
+            },
+            enabled = !isSending && name.isNotBlank() && email.isNotBlank() && message.isNotBlank(),
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+        ) {
+            if (isSending) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    color = NeonPurple,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text("Enviar Mensaje", color = NeonPurple, fontWeight = FontWeight.Bold)
+            }
+        }
+
+        if (showMessage) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                "✓ Mensaje enviado correctamente",
+                color = Color.White,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
         
         // Contact Info Cards
         ContactInfoCard(
             icon = Icons.Filled.Email,
             label = "Email",
             value = "miniamigixv@gmail.com"
-        )
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        ContactInfoCard(
-            icon = Icons.Filled.Public,
-            label = "Web",
-            value = "miniamigixv.com"
         )
         
         Spacer(modifier = Modifier.height(16.dp))

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -119,29 +120,29 @@ private fun GameCard(game: Game, onClick: () -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f)
+            .height(160.dp)
             .clickable(onClick = onClick),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+                .padding(16.dp)
         ) {
             // Icon
             Box(
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(56.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(
-                        Brush.radialGradient(
+                        Brush.linearGradient(
                             colors = listOf(
-                                AccentPurple.copy(alpha = 0.3f),
-                                AccentBlue.copy(alpha = 0.1f)
+                                AccentPurple.copy(alpha = 0.4f),
+                                AccentBlue.copy(alpha = 0.3f)
                             )
                         )
                     ),
@@ -150,49 +151,64 @@ private fun GameCard(game: Game, onClick: () -> Unit = {}) {
                 Icon(
                     game.icon,
                     contentDescription = null,
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
 
+            // Content at bottom
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.align(Alignment.BottomStart),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
+                // Tag
+                Surface(
+                    color = AccentPurple.copy(alpha = 0.15f),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        game.tag,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AccentPurple,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+
                 // Title
                 Text(
                     game.title,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
-                    textAlign = TextAlign.Center
+                    maxLines = 1
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
 
                 // Description
                 Text(
                     game.description,
-                    fontSize = 13.sp,
+                    fontSize = 11.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 18.sp
+                    maxLines = 2,
+                    lineHeight = 14.sp
                 )
+            }
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // Tag
-                Surface(
-                    color = AccentPurple.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Text(
-                        game.tag,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = AccentPurple,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                    )
-                }
+            // Play button
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(AccentPurple),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Filled.PlayArrow,
+                    contentDescription = "Jugar",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }

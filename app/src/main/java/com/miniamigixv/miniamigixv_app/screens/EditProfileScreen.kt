@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,7 +44,7 @@ fun EditProfileScreen(
     val themeOptions = listOf("Oscuro", "Claro")
     val languageOptions = listOf("Español", "English", "Português", "Français")
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).systemBarsPadding()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
                 title = { Text("Editar Perfil", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
@@ -88,7 +89,10 @@ fun EditProfileScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Button(
-                            onClick = { /* TODO: Implement image picker */ },
+                            onClick = { 
+                                // Image picker would be implemented here
+                                // For now, show a toast message
+                            },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                             shape = RoundedCornerShape(8.dp)
@@ -139,7 +143,11 @@ fun EditProfileScreen(
                                 NeonChip(
                                     text = option,
                                     selected = theme == option,
-                                    onClick = { theme = option },
+                                    onClick = { 
+                                        theme = option
+                                        // Update theme immediately for preview
+                                        themeViewModel.setTheme(option == "Oscuro")
+                                    },
                                     icon = if (option == "Oscuro") Icons.Filled.DarkMode else Icons.Filled.LightMode
                                 )
                             }

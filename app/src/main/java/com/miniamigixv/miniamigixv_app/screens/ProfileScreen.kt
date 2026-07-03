@@ -3,6 +3,7 @@ package com.miniamigixv.miniamigixv_app.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,7 +32,7 @@ fun ProfileScreen(
     onNavigateToEdit: () -> Unit = {},
     authViewModel: AuthViewModel = viewModel()
 ) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).systemBarsPadding()) {
         val isCompact = maxWidth < 600.dp
 
         Column(modifier = Modifier.fillMaxSize()) {

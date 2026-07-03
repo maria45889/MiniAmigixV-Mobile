@@ -9,10 +9,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.miniamigixv.miniamigixv_app.ui.components.*
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,6 +25,9 @@ fun SuggestionsBottomSheet(
     var title by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
     var priority by remember { mutableStateOf("Media") }
+    var isSending by remember { mutableStateOf(false) }
+    var showSuccess by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -83,11 +88,45 @@ fun SuggestionsBottomSheet(
 
             // Submit button
             NeonButton(
-                text = "Enviar al Admin",
-                onClick = { onDismiss() },
+                text = if (isSending) "Enviando..." else "Enviar al Admin",
+                onClick = {
+                    if (title.isNotBlank() && message.isNotBlank()) {
+                        isSending = true
+                        // Simulate sending to backend
+                        coroutineScope.launch {
+                            kotlinx.coroutines.delay(2000)
+                            isSending = false
+                            showSuccess = true
+                            kotlinx.coroutines.delay(1500)
+                            onDismiss()
+                        }
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
-                icon = { Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null, tint = MaterialTheme.colorScheme.background, modifier = Modifier.size(18.dp)) }
+                icon = { 
+                    if (isSending) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            color = MaterialTheme.colorScheme.background,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null, tint = MaterialTheme.colorScheme.background, modifier = Modifier.size(18.dp))
+                    }
+                }
             )
+
+            if (showSuccess) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    "✓ Sugerencia enviada correctamente",
+                    color = Color(0xFF10B981),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
         }
