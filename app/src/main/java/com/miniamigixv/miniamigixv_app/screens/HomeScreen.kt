@@ -32,22 +32,27 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.miniamigixv.miniamigixv_app.R
+import com.miniamigixv.miniamigixv_app.ui.components.GlassCard
+import com.miniamigixv.miniamigixv_app.ui.components.GlassPanel
+import com.miniamigixv.miniamigixv_app.ui.components.NeonGlowBox
+import com.miniamigixv.miniamigixv_app.ui.theme.ThemeViewModel
 
-// Neon accent colors
 private val NeonPurple = Color(0xFF8B5CF6)
-private val NeonBlue = Color(0xFF3b82f6)
+private val NeonBlue = Color(0xFF06B6D4)
 private val NeonCyan = Color(0xFF22D3EE)
-private val NeonPink = Color(0xFFec4899)
-private val NeonGreen = Color(0xFF10b981)
-private val NeonOrange = Color(0xFFf59e0b)
-private val ErrorRed = Color(0xFFef4444)
+private val NeonPink = Color(0xFFF472B6)
+private val NeonGreen = Color(0xFF10B981)
+private val NeonOrange = Color(0xFFF59E0B)
+private val ErrorRed = Color(0xFFEF4444)
 
 private data class ModuleCard(
     val title: String,
@@ -64,10 +69,18 @@ private data class MenuItem(
     val color: Color = Color.Unspecified
 )
 
+private data class QuickAccessItem(
+    val title: String,
+    val iconText: String,
+    val gradient: List<Color>,
+    val onClick: () -> Unit
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     userName: String = "María José",
+    themeViewModel: ThemeViewModel? = null,
     onNavigateToWeather: () -> Unit = {},
     onNavigateToMusic: () -> Unit = {},
     onNavigateToChat: () -> Unit = {},
@@ -86,9 +99,9 @@ fun HomeScreen(
     onLogout: () -> Unit = {}
 ) {
     var showSuggestionsDialog by remember { mutableStateOf(false) }
-    var isDarkMode by remember { mutableStateOf(true) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
+    val isDarkTheme by themeViewModel?.isDarkTheme?.collectAsState() ?: remember { mutableStateOf(true) }
 
     val modules = listOf(
         ModuleCard("Chat IA", "Conversa con tu asistente virtual inteligente.", Icons.Filled.SmartToy, NeonPink, onNavigateToChat),
@@ -112,6 +125,13 @@ fun HomeScreen(
         MenuItem("Blog", Icons.Filled.Article, onNavigateToBlog),
         MenuItem("Soporte", Icons.Filled.SupportAgent, onNavigateToSupport),
         MenuItem("Tutorial", Icons.Filled.Info, onNavigateToTutorial)
+    )
+
+    val recentActivities = listOf(
+        "Chat IA" to "Hoy",
+        "Música" to "Hoy",
+        "Evento" to "Hoy",
+        "Traductor" to "Hoy"
     )
 
     ModalNavigationDrawer(
@@ -170,7 +190,6 @@ fun HomeScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
                         
-                        // Cerrar Sesión button
                         NavigationDrawerItem(
                             icon = { Icon(Icons.Filled.Logout, contentDescription = "Cerrar Sesión", tint = ErrorRed) },
                             label = { Text("Cerrar Sesión", color = ErrorRed, fontSize = 14.sp) },
@@ -185,7 +204,6 @@ fun HomeScreen(
                         
                         Spacer(modifier = Modifier.height(16.dp))
                         
-                        // Gradient Bar
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -199,7 +217,6 @@ fun HomeScreen(
                     
                     Divider(color = MaterialTheme.colorScheme.surface)
                     
-                    // Bottom icons row
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -239,9 +256,9 @@ fun HomeScreen(
                         IconButton(onClick = onNavigateToNotifications) {
                             Icon(Icons.Filled.NotificationsNone, contentDescription = "Notificaciones", tint = MaterialTheme.colorScheme.onBackground)
                         }
-                        IconButton(onClick = { isDarkMode = !isDarkMode }) {
+                        IconButton(onClick = { themeViewModel?.toggleTheme() }) {
                             Icon(
-                                if (isDarkMode) Icons.Filled.DarkMode else Icons.Filled.LightMode, 
+                                if (isDarkTheme) Icons.Filled.DarkMode else Icons.Filled.LightMode, 
                                 contentDescription = "Cambiar Tema", 
                                 tint = MaterialTheme.colorScheme.onBackground
                             )
@@ -254,68 +271,108 @@ fun HomeScreen(
                 )
             }
         ) { paddingValues ->
-            BoxWithConstraints(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
                     .padding(paddingValues)
                     .systemBarsPadding()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                val isCompact = maxWidth < 600.dp
-                
+                // Hero Section
+                GlassPanel(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 28.dp
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp)
+                    ) {
+                        Text(
+                            text = "Bienvenido a MiniAmigixV",
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = NeonCyan,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Tu espacio personal interactivo",
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "🤖",
+                            fontSize = 64.sp
+                        )
+                    }
+                }
+
+                // Frase del Día and Actividad Grid
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    FraseDelDiaCard(Modifier.weight(1f))
+                    TuActividadCard(Modifier.weight(1f))
+                }
+
+                // Quick Access Section
+                Text(
+                    text = "Accesos Rápidos",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    QuickAccessItem(
+                        title = "IA",
+                        iconText = "💬",
+                        gradient = listOf(NeonPink, NeonOrange),
+                        onClick = onNavigateToChat,
+                        modifier = Modifier.weight(1f)
+                    )
+                    QuickAccessItem(
+                        title = "Música",
+                        iconText = "🎵",
+                        gradient = listOf(NeonBlue, NeonCyan),
+                        onClick = onNavigateToMusic,
+                        modifier = Modifier.weight(1f)
+                    )
+                    QuickAccessItem(
+                        title = "Juegos",
+                        iconText = "🎮",
+                        gradient = listOf(NeonGreen, NeonCyan),
+                        onClick = onNavigateToGames,
+                        modifier = Modifier.weight(1f)
+                    )
+                    QuickAccessItem(
+                        title = "Traductor",
+                        iconText = "🌐",
+                        gradient = listOf(NeonPurple, NeonPink),
+                        onClick = onNavigateToTranslator,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                // Module Cards
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(minSize = 160.dp),
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 400.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        // Main Banner
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(24.dp))
-                                .background(MaterialTheme.colorScheme.surface)
-                                .padding(24.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(
-                                    text = "Bienvenido a MiniAmigixV",
-                                    fontSize = 26.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = NeonCyan,
-                                    textAlign = TextAlign.Center
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = "Tu espacio personal interactivo",
-                                    fontSize = 16.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-                    }
-
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        if (isCompact) {
-                            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                                FraseDelDiaCard(Modifier.fillMaxWidth())
-                                TuActividadCard(Modifier.fillMaxWidth())
-                            }
-                        } else {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                FraseDelDiaCard(Modifier.weight(1f))
-                                TuActividadCard(Modifier.weight(1f))
-                            }
-                        }
-                    }
-
                     items(modules) { module ->
                         ModuleCardItem(
                             module = module,
@@ -323,6 +380,32 @@ fun HomeScreen(
                         )
                     }
                 }
+
+                // Recent Activity Section
+                Text(
+                    text = "Actividad Reciente",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    recentActivities.forEach { (text, time) ->
+                        RecentActivityItem(text = text, time = time)
+                    }
+                }
+
+                // Footer
+                Spacer(modifier = Modifier.height(16.dp))
+                Divider(color = MaterialTheme.colorScheme.outlineVariant)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "MiniAmigixV  •  Versión 1.0  •  © 2026",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 12.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
             }
             
             if (showSuggestionsDialog) {
@@ -337,12 +420,7 @@ fun HomeScreen(
 
 @Composable
 private fun FraseDelDiaCard(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
-    ) {
+    GlassCard(modifier = modifier) {
         Column {
             Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = NeonOrange)
             Spacer(modifier = Modifier.height(8.dp))
@@ -350,7 +428,7 @@ private fun FraseDelDiaCard(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 "\"El único modo de hacer un gran trabajo es amar lo que haces.\"",
-                color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontStyle = FontStyle.Italic
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text("- Steve Jobs", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 10.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End)
@@ -360,43 +438,105 @@ private fun FraseDelDiaCard(modifier: Modifier = Modifier) {
 
 @Composable
 private fun TuActividadCard(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
-    ) {
+    GlassCard(modifier = modifier) {
         Column {
             Text("Tu Actividad", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(16.dp))
-            ActivityChart()
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                KpiItem("💬", "0", "Chats")
+                KpiItem("🎵", "0", "Canciones")
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                KpiItem("📅", "0", "Eventos")
+                KpiItem("🌦", "23°", "Clima")
+            }
         }
     }
 }
 
 @Composable
-private fun ActivityChart() {
-    Canvas(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp)
-    ) {
-        val barWidth = size.width / 8
-        val maxHeight = size.height
-        val data = listOf(0.8f, 0.2f, 0.5f, 0.9f)
-        val colors = listOf(NeonPurple, NeonBlue, NeonPink, NeonGreen)
+private fun KpiItem(icon: String, value: String, label: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = icon, fontSize = 20.sp)
+        Text(
+            text = value,
+            color = NeonCyan,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = label,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 11.sp
+        )
+    }
+}
 
-        data.forEachIndexed { index, value ->
-            val barHeight = value * maxHeight
-            val x = index * (barWidth * 2) + barWidth / 2
-            val y = maxHeight - barHeight
-
-            drawRoundRect(
-                color = colors[index],
-                topLeft = Offset(x, y),
-                size = Size(barWidth, barHeight),
-                cornerRadius = CornerRadius(4.dp.toPx())
+@Composable
+private fun QuickAccessItem(
+    title: String,
+    iconText: String,
+    gradient: List<Color>,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    GlassCard(modifier = modifier.clickable { onClick() }) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = iconText, fontSize = 28.sp)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = title,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold
             )
+        }
+    }
+}
+
+@Composable
+private fun RecentActivityItem(text: String, time: String) {
+    GlassCard(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(NeonPurple.copy(alpha = 0.2f), NeonBlue.copy(alpha = 0.15f))
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                val icon = when {
+                    text.contains("Chat") -> Icons.Filled.SmartToy
+                    text.contains("Música") || text.contains("Music") -> Icons.Filled.LibraryMusic
+                    text.contains("Evento") -> Icons.Filled.Event
+                    text.contains("Traductor") -> Icons.Filled.Translate
+                    else -> Icons.Filled.CheckCircle
+                }
+                Icon(icon, contentDescription = null, tint = NeonPurple, modifier = Modifier.size(20.dp))
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Medium, fontSize = 14.sp)
+                Text(time, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+            }
+            Text("✔", color = NeonGreen, fontSize = 18.sp)
         }
     }
 }
@@ -410,46 +550,46 @@ private fun ModuleCardItem(
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(targetValue = if (isPressed) 0.95f else 1f, label = "scale")
     
-    // Simple glow animation
     var glowAlpha by remember { mutableStateOf(0.1f) }
     LaunchedEffect(Unit) {
         while (true) {
             glowAlpha = 0.3f
-            kotlinx.coroutines.delay(1000)
+            delay(1000)
             glowAlpha = 0.1f
-            kotlinx.coroutines.delay(1000)
+            delay(1000)
         }
     }
 
-    Box(
-        modifier = modifier
-            .scale(scale)
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .clickable(interactionSource = interactionSource, indication = null, onClick = module.onClick)
-            .padding(16.dp)
+    NeonGlowBox(
+        glowColor = module.iconColor,
+        modifier = modifier.scale(scale)
     ) {
-        Column(horizontalAlignment = Alignment.Start) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(
-                                module.iconColor.copy(alpha = glowAlpha),
-                                Color.Transparent
+        GlassCard(
+            modifier = Modifier
+                .clickable(interactionSource = interactionSource, indication = null, onClick = module.onClick)
+        ) {
+            Column(horizontalAlignment = Alignment.Start) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    module.iconColor.copy(alpha = glowAlpha),
+                                    Color.Transparent
+                                )
                             )
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(module.icon, contentDescription = null, tint = module.iconColor, modifier = Modifier.size(28.dp))
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(module.icon, contentDescription = null, tint = module.iconColor, modifier = Modifier.size(28.dp))
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(module.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(module.description, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 16.sp)
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(module.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(module.description, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, lineHeight = 16.sp)
         }
     }
 }
@@ -527,7 +667,6 @@ private fun NeonSuggestionsDialog(
                             modifier = Modifier.fillMaxSize()
                         )
                         
-                        // Small bot icon bottom right
                         Icon(
                             Icons.Filled.SmartToy,
                             contentDescription = null,
@@ -538,7 +677,6 @@ private fun NeonSuggestionsDialog(
                         )
                     }
                     
-                    // Purple border effect
                     Box(
                         modifier = Modifier
                             .fillMaxSize()

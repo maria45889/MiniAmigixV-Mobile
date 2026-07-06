@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,87 +16,164 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.miniamigixv.miniamigixv_app.ui.components.*
+import com.miniamigixv.miniamigixv_app.ui.components.GlassCard
+import com.miniamigixv.miniamigixv_app.ui.theme.ThemeViewModel
 import kotlinx.coroutines.launch
+
+private val NeonPurple = Color(0xFF8B5CF6)
+private val NeonBlue = Color(0xFF06B6D4)
+private val NeonCyan = Color(0xFF22D3EE)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SupportScreen(onBack: () -> Unit = {}) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        val isCompact = maxWidth < 600.dp
-
+fun SupportScreen(
+    themeViewModel: ThemeViewModel,
+    onBack: () -> Unit = {}
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.radialGradient(
+                    colors = listOf(Color(0xFF09090F), Color(0xFF0F172A))
+                )
+            )
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBar(
-                title = { Text("Centro de Soporte", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground) },
+                title = {
+                    Text(
+                        "Soporte",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = MaterialTheme.colorScheme.onBackground)
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color.White
+                        )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    NeonHeader(
-                        title = "¿Cómo podemos ayudarte?", 
-                        subtitle = "Estamos aquí para resolver tus dudas y hacer tu experiencia increíble.",
-                        icon = { Icon(Icons.Filled.SupportAgent, contentDescription = null, tint = NeonPurple, modifier = Modifier.size(48.dp)) }
-                    )
+                    HeroSection()
                 }
 
                 item {
-                    if (isCompact) {
-                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                            InfoCards()
-                        }
-                    } else {
-                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                            InfoCards(Modifier.weight(1f))
-                        }
+                    SectionHeader("Preguntas Frecuentes")
+                }
+                item {
+                    GlassCard {
+                        FaqItem(
+                            "Como creo mi cuenta?",
+                            "Para crear tu cuenta, ve a la seccion de Inicio y presiona 'Registrarse'. Llena tus datos y estaras listo."
+                        )
+                    }
+                }
+                item {
+                    GlassCard {
+                        FaqItem(
+                            "La plataforma es gratuita?",
+                            "Si, el acceso a MiniAmigixV es gratuito con opciones premium adicionales."
+                        )
+                    }
+                }
+                item {
+                    GlassCard {
+                        FaqItem(
+                            "Como uso el Chat IA?",
+                            "Solo ingresa al modulo Chat IA, escribe tu pregunta en la caja inferior y el asistente te respondera instantaneamente."
+                        )
+                    }
+                }
+                item {
+                    GlassCard {
+                        FaqItem(
+                            "Como reporto un error?",
+                            "Puedes usar el formulario a continuacion para describir el error que encontraste."
+                        )
                     }
                 }
 
                 item {
-                    Text("Preguntas Frecuentes", color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        FaqItem("¿Cómo creo mi cuenta?", "Para crear tu cuenta, ve a la sección de Inicio y presiona 'Registrarse'. Llena tus datos y estarás listo.")
-                        FaqItem("¿La plataforma es gratuita?", "Sí, el acceso a MiniAmigixV es gratuito con opciones premium adicionales.")
-                        FaqItem("¿Cómo uso el Chat IA?", "Solo ingresa al módulo Chat IA, escribe tu pregunta en la caja inferior y el asistente te responderá instantáneamente.")
-                        FaqItem("¿Cómo reporto un error?", "Puedes usar el formulario a continuación para describir el error que encontraste.")
+                    SectionHeader("Contacto")
+                }
+                item {
+                    GlassCard {
+                        ContactRow(
+                            icon = Icons.Filled.Email,
+                            label = "Email",
+                            value = "miniamigixv@gmail.com"
+                        )
+                        GlassDivider()
+                        ContactRow(
+                            icon = Icons.Filled.Chat,
+                            label = "WhatsApp",
+                            value = "+52 55 1234 5678"
+                        )
+                        GlassDivider()
+                        ContactRow(
+                            icon = Icons.Filled.Description,
+                            label = "Formulario",
+                            value = "Enviar reporte"
+                        )
                     }
                 }
 
                 item {
-                    ContactForm()
+                    SectionHeader("Reportar un problema")
                 }
+                item {
+                    ReportProblemCard()
+                }
+
+                item { Spacer(modifier = Modifier.height(16.dp)) }
             }
         }
     }
 }
 
 @Composable
-private fun InfoCards(modifier: Modifier = Modifier) {
-    InfoCard(modifier, "Qué es MiniAmigixV", "Una plataforma todo en uno con Chat IA, música, juegos y mucho más. Diseñada para simplificar tu vida digital.", Icons.Filled.Info)
-    InfoCard(modifier, "Misión", "Crear una app moderna, inteligente y accesible que unifique herramientas útiles en un solo lugar.", Icons.Filled.TrackChanges)
-    InfoCard(modifier, "Visión", "Ser una plataforma global tipo 'super app' educativa y social que transforme la manera en que las personas interactúan con la tecnología.", Icons.Filled.Visibility)
-}
-
-@Composable
-private fun InfoCard(modifier: Modifier, title: String, text: String, icon: androidx.compose.ui.graphics.vector.ImageVector) {
-    NeonCard(modifier = modifier) {
-        Icon(icon, contentDescription = null, tint = NeonCyan, modifier = Modifier.size(24.dp))
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+private fun HeroSection() {
+    GlassCard(cornerRadius = 24.dp) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "\uD83C\uDF9F\uFE0F",
+                fontSize = 48.sp
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                "Como podemos ayudarte?",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                "Estamos aqui para resolver tus dudas",
+                color = Color.White.copy(alpha = 0.6f),
+                fontSize = 13.sp,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
@@ -103,207 +181,208 @@ private fun InfoCard(modifier: Modifier, title: String, text: String, icon: andr
 private fun FaqItem(question: String, answer: String) {
     var expanded by remember { mutableStateOf(false) }
 
-    NeonCard(padding = 0.dp) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { expanded = !expanded }
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(question, color = MaterialTheme.colorScheme.onBackground, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                Icon(
-                    if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            AnimatedVisibility(visible = expanded) {
-                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
-                    Divider(color = Color.White.copy(alpha = 0.1f))
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(answer, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ContactForm() {
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var message by remember { mutableStateOf("") }
-    var isSending by remember { mutableStateOf(false) }
-    var showMessage by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                Brush.horizontalGradient(
-                    colors = listOf(NeonPurple, Color(0xFF3B82F6))
-                )
-            )
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            "Escríbenos",
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            "¿No encontraste la respuesta? Nuestro equipo te ayudará personalmente.",
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
-            fontSize = 14.sp,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        // Form fields
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded },
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            CustomOutlinedField(name, "Nombre", "Tu nombre", { name = it })
-            CustomOutlinedField(email, "Email", "tu@email.com", { email = it })
-            CustomOutlinedField(message, "Mensaje", "Describe tu problema...", { message = it })
-        }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        Button(
-            onClick = {
-                if (name.isNotBlank() && email.isNotBlank() && message.isNotBlank()) {
-                    isSending = true
-                    // Simulate sending email
-                    coroutineScope.launch {
-                        kotlinx.coroutines.delay(2000)
-                        isSending = false
-                        showMessage = true
-                        name = ""
-                        email = ""
-                        message = ""
-                    }
-                }
-            },
-            enabled = !isSending && name.isNotBlank() && email.isNotBlank() && message.isNotBlank(),
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-        ) {
-            if (isSending) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    color = NeonPurple,
-                    strokeWidth = 2.dp
-                )
-            } else {
-                Text("Enviar Mensaje", color = NeonPurple, fontWeight = FontWeight.Bold)
-            }
-        }
-
-        if (showMessage) {
-            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                "✓ Mensaje enviado correctamente",
+                question,
                 color = Color.White,
-                fontSize = 12.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Bold
             )
+            Icon(
+                if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription = null,
+                tint = Color.White.copy(alpha = 0.5f)
+            )
         }
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        // Contact Info Cards
-        ContactInfoCard(
-            icon = Icons.Filled.Email,
-            label = "Email",
-            value = "miniamigixv@gmail.com"
-        )
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        ContactInfoCard(
-            icon = Icons.Filled.AccessTime,
-            label = "Tiempo de respuesta",
-            value = "Menos de 24 horas"
-        )
+        AnimatedVisibility(visible = expanded) {
+            Column(modifier = Modifier.padding(top = 8.dp)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.White.copy(alpha = 0.08f))
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    answer,
+                    color = Color.White.copy(alpha = 0.6f),
+                    fontSize = 14.sp
+                )
+            }
+        }
     }
 }
 
 @Composable
-private fun ContactInfoCard(
+private fun ContactRow(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     label: String,
     value: String
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White.copy(alpha = 0.15f), RoundedCornerShape(12.dp))
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-        
-        Spacer(modifier = Modifier.width(16.dp))
-        
+        Icon(
+            icon,
+            contentDescription = null,
+            tint = NeonBlue,
+            modifier = Modifier.size(22.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
         Column {
             Text(
                 label,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
-                fontSize = 12.sp,
+                color = Color.White.copy(alpha = 0.5f),
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 value,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                color = Color.White,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }
 }
 
 @Composable
-private fun CustomOutlinedField(value: String, label: String, placeholder: String, onValueChange: (String) -> Unit) {
+private fun ReportProblemCard() {
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var message by remember { mutableStateOf("") }
+    var isSending by remember { mutableStateOf(false) }
+    var sent by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    GlassCard {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(
+                "Describe tu problema",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+            Text(
+                "Nuestro equipo te ayudara personalmente.",
+                color = Color.White.copy(alpha = 0.5f),
+                fontSize = 12.sp
+            )
+
+            InputField(value = name, label = "Nombre", placeholder = "Tu nombre", onValueChange = { name = it })
+            InputField(value = email, label = "Email", placeholder = "tu@email.com", onValueChange = { email = it })
+            InputField(value = message, label = "Mensaje", placeholder = "Describe tu problema...", onValueChange = { message = it })
+
+            Button(
+                onClick = {
+                    if (name.isNotBlank() && email.isNotBlank() && message.isNotBlank()) {
+                        isSending = true
+                        scope.launch {
+                            kotlinx.coroutines.delay(2000)
+                            isSending = false
+                            sent = true
+                            name = ""
+                            email = ""
+                            message = ""
+                        }
+                    }
+                },
+                enabled = !isSending && name.isNotBlank() && email.isNotBlank() && message.isNotBlank(),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = NeonPurple
+                )
+            ) {
+                if (isSending) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Enviar Reporte", color = Color.White, fontWeight = FontWeight.Bold)
+                }
+            }
+
+            if (sent) {
+                Text(
+                    "Reporte enviado correctamente",
+                    color = Color(0xFF10B981),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun InputField(
+    value: String,
+    label: String,
+    placeholder: String,
+    onValueChange: (String) -> Unit
+) {
     Column {
-        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Text(
+            label,
+            color = Color.White.copy(alpha = 0.6f),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(placeholder, color = MaterialTheme.colorScheme.onSurfaceVariant) },
+            placeholder = {
+                Text(
+                    placeholder,
+                    color = Color.White.copy(alpha = 0.3f)
+                )
+            },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = NeonPurple,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
-                focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedContainerColor = Color.White.copy(alpha = 0.05f),
+                unfocusedContainerColor = Color.White.copy(alpha = 0.05f)
             ),
             shape = RoundedCornerShape(8.dp)
         )
     }
+}
+
+@Composable
+private fun SectionHeader(title: String) {
+    Text(
+        title,
+        color = NeonPurple,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        modifier = Modifier.padding(start = 4.dp, top = 8.dp, bottom = 4.dp)
+    )
+}
+
+@Composable
+private fun GlassDivider() {
+    Spacer(modifier = Modifier.height(8.dp))
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(Color.White.copy(alpha = 0.05f))
+    )
+    Spacer(modifier = Modifier.height(8.dp))
 }

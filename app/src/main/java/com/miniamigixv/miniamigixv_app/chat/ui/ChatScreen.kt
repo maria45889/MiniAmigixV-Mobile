@@ -37,14 +37,18 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.miniamigixv.miniamigixv_app.chat.data.model.ChatConversation
 import com.miniamigixv.miniamigixv_app.chat.data.model.ChatMessage
+import com.miniamigixv.miniamigixv_app.ui.components.GlassCard
+import com.miniamigixv.miniamigixv_app.ui.components.GlassPanel
 import android.net.Uri
 import android.speech.tts.TextToSpeech
 import androidx.activity.result.contract.ActivityResultContracts
 import java.util.*
 
 // Colors to match the new Neon Web Chat UI
-private val UserBubble = Color(0xFF1E3A8A) // Dark blue for user
-private val AIBubble = Color(0xFF111827) // Dark gray/blue for AI
+private val UserBubbleGradient = Brush.horizontalGradient(
+    colors = listOf(Color(0xFF8B5CF6), Color(0xFF06B6D4))
+)
+private val AIBubble = Color(0xFF111827).copy(alpha = 0.7f)
 private val UserAvatar = Color(0xFF06B6D4) // Cyan avatar
 private val AIAvatar = Color(0xFF8B5CF6) // Purple avatar
 private val InputBg = Color(0xFF111827) // Very dark input background
@@ -396,16 +400,24 @@ private fun ChatBubbleWithAvatar(message: ChatMessage, screenWidth: Dp) {
             Spacer(modifier = Modifier.width(8.dp))
         }
 
-        // Bubble
-        val containerColor = if (message.isUser) UserBubble else AIBubble
-        val shape = RoundedCornerShape(12.dp)
+        // Bubble with glassmorphism
+        val shape = RoundedCornerShape(20.dp)
         // User bubble: max 75%, AI bubble: max 85%
         val maxWidthFraction = if (message.isUser) 0.75f else 0.85f
 
-        Surface(
-            shape = shape,
-            color = containerColor,
-            modifier = Modifier.widthIn(max = screenWidth * maxWidthFraction)
+        Box(
+            modifier = Modifier
+                .widthIn(max = screenWidth * maxWidthFraction)
+                .clip(shape)
+                .then(
+                    if (message.isUser) {
+                        Modifier.background(UserBubbleGradient)
+                    } else {
+                        Modifier
+                            .background(AIBubble)
+                            .border(1.dp, Color.White.copy(alpha = 0.08f), shape)
+                    }
+                )
         ) {
             Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
                 message.imageUrl?.let { imageUrl ->
@@ -426,7 +438,7 @@ private fun ChatBubbleWithAvatar(message: ChatMessage, screenWidth: Dp) {
                     Text(
                         text = message.text,
                         fontSize = 15.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = Color.White,
                         lineHeight = 20.sp
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -434,7 +446,7 @@ private fun ChatBubbleWithAvatar(message: ChatMessage, screenWidth: Dp) {
                 Text(
                     text = formatTimestamp(message.timestamp),
                     fontSize = 10.sp,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                    color = Color.White.copy(alpha = 0.7f),
                     modifier = Modifier.align(Alignment.End)
                 )
             }

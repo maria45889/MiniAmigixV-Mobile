@@ -128,6 +128,7 @@ fun AppNavigation(mainActivity: MainActivity, themeViewModel: ThemeViewModel) {
         }
         composable(Screen.Home.route) {
             HomeScreen(
+                themeViewModel = themeViewModel,
                 onNavigateToWeather = { navController.navigate(Screen.Weather.route) },
                 onNavigateToMusic = { navController.navigate(Screen.Music.route) },
                 onNavigateToChat = { navController.navigate(Screen.Chat.route) },
@@ -147,7 +148,7 @@ fun AppNavigation(mainActivity: MainActivity, themeViewModel: ThemeViewModel) {
             )
         }
         composable(Screen.Weather.route) {
-            WeatherScreen(onBack = { navController.popBackStack() })
+            WeatherScreen(themeViewModel = themeViewModel, onBack = { navController.popBackStack() })
         }
         composable(Screen.Music.route) {
             MusicScreen(onBack = { navController.popBackStack() })
@@ -194,22 +195,22 @@ fun AppNavigation(mainActivity: MainActivity, themeViewModel: ThemeViewModel) {
             TicTacToeScreen(onBack = { navController.popBackStack() })
         }
         composable(Screen.Study.route) {
-            StudyScreen(onBack = { navController.popBackStack() })
+            StudyScreen(themeViewModel = themeViewModel, onBack = { navController.popBackStack() })
         }
         composable(Screen.Events.route) {
             EventsScreen(onBack = { navController.popBackStack() })
         }
         composable(Screen.Translator.route) {
-            TranslatorScreen(onBack = { navController.popBackStack() })
+            TranslatorScreen(themeViewModel = themeViewModel, onBack = { navController.popBackStack() })
         }
         composable(Screen.Entertainment.route) {
-            EntertainmentScreen(onBack = { navController.popBackStack() })
+            EntertainmentScreen(themeViewModel = themeViewModel, onBack = { navController.popBackStack() })
         }
         composable(Screen.Blog.route) {
             BlogScreen(onBack = { navController.popBackStack() })
         }
         composable(Screen.Support.route) {
-            SupportScreen(onBack = { navController.popBackStack() })
+            SupportScreen(themeViewModel = themeViewModel, onBack = { navController.popBackStack() })
         }
         composable(Screen.AdminCenter.route) {
             AdminCenterScreen(onBack = { navController.popBackStack() })
@@ -221,7 +222,7 @@ fun AppNavigation(mainActivity: MainActivity, themeViewModel: ThemeViewModel) {
             SettingsScreen(onBack = { navController.popBackStack() }, themeViewModel = themeViewModel)
         }
         composable(Screen.Notifications.route) {
-            NotificationsScreen(onBack = { navController.popBackStack() })
+            NotificationsScreen(themeViewModel = themeViewModel, onBack = { navController.popBackStack() })
         }
     }
 }
