@@ -171,7 +171,7 @@ Proporcionar la misma experiencia completa de MiniAmigixV en dispositivos móvil
 
 ---
 
-## � Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```bash
 MiniAmigixV-Mobile/
@@ -476,3 +476,4 @@ Especialista en Kotlin, Jetpack Compose y desarrollo de interfaces móviles mode
 
 **⭐ Si te gusta este proyecto, ¡dale una estrella en GitHub! ⭐**
 
+</div>
