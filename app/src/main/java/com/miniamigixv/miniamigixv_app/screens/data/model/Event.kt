@@ -5,5 +5,9 @@ data class Event(
     val title: String,
     val description: String,
     val dateTime: Long,
-    val location: String = ""
+    val location: String = "",
+    val category: String = "personal",
+    val reminderActive: Boolean = false,
+    val reminderMinutesBefore: Int = 30,
+    val createdAt: Long = System.currentTimeMillis()
 )

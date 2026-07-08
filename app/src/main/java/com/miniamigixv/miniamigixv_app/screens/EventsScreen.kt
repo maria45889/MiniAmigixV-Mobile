@@ -654,12 +654,15 @@ private fun EmptyState() {
 @Composable
 fun CreateEventDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String, String, Long, String) -> Unit
+    onConfirm: (String, String, Long, String, String, Boolean, Int) -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var dateTime by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("personal") }
+    var reminderActive by remember { mutableStateOf(false) }
+    var reminderMinutesBefore by remember { mutableStateOf(30) }
     var errorMessage by remember { mutableStateOf("") }
 
     Dialog(
@@ -764,6 +767,100 @@ fun CreateEventDialog(
                     )
                 )
 
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    "Categoría",
+                    color = Color.White.copy(alpha = 0.6f),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(categoryInfo.size) { index ->
+                        val (catName, catEmoji) = categoryInfo[index]
+                        val selected = category == catName.lowercase()
+                        FilterChip(
+                            selected = selected,
+                            onClick = { category = catName.lowercase() },
+                            label = { Text("$catEmoji $catName", fontSize = 12.sp) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = categoryColors[index].copy(alpha = 0.3f),
+                                containerColor = Color.White.copy(alpha = 0.05f),
+                                selectedLabelColor = Color.White,
+                                labelColor = Color.White.copy(alpha = 0.7f)
+                            ),
+                            border = androidx.compose.foundation.BorderStroke(
+                                1.dp,
+                                if (selected) categoryColors[index].copy(alpha = 0.5f)
+                                else Color.White.copy(alpha = 0.1f)
+                            )
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "Recordatorio",
+                        color = Color.White.copy(alpha = 0.6f),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Switch(
+                        checked = reminderActive,
+                        onCheckedChange = { reminderActive = it },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = NeonPurple,
+                            checkedTrackColor = NeonPurple.copy(alpha = 0.5f),
+                            uncheckedThumbColor = Color.White.copy(alpha = 0.5f),
+                            uncheckedTrackColor = Color.White.copy(alpha = 0.2f)
+                        )
+                    )
+                }
+
+                if (reminderActive) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        "Minutos antes",
+                        color = Color.White.copy(alpha = 0.6f),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        listOf(5, 15, 30, 60).forEach { minutes ->
+                            FilterChip(
+                                selected = reminderMinutesBefore == minutes,
+                                onClick = { reminderMinutesBefore = minutes },
+                                label = { Text("${minutes}m", fontSize = 12.sp) },
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = NeonPurple.copy(alpha = 0.3f),
+                                    containerColor = Color.White.copy(alpha = 0.05f),
+                                    selectedLabelColor = Color.White,
+                                    labelColor = Color.White.copy(alpha = 0.7f)
+                                ),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    if (reminderMinutesBefore == minutes) NeonPurple.copy(alpha = 0.5f)
+                                    else Color.White.copy(alpha = 0.1f)
+                                )
+                            )
+                        }
+                    }
+                }
+
                 if (errorMessage.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
@@ -803,7 +900,7 @@ fun CreateEventDialog(
                                         errorMessage = "La fecha debe ser presente o futura"
                                         return@Button
                                     }
-                                    onConfirm(title, description, eventTime, location)
+                                    onConfirm(title, description, eventTime, location, category, reminderActive, reminderMinutesBefore)
                                 } else {
                                     errorMessage = "Formato de fecha inv\u00E1lido"
                                 }

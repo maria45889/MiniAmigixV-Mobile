@@ -27,21 +27,30 @@ class EventsViewModel : ViewModel() {
                 title = "Reunión de equipo",
                 description = "Sala Virtual",
                 dateTime = now + 3600000,
-                location = "Zoom"
+                location = "Zoom",
+                category = "reunion",
+                reminderActive = true,
+                reminderMinutesBefore = 15
             ),
             Event(
                 id = UUID.randomUUID().toString(),
                 title = "Estudiar Matemáticas",
                 description = "Temas: Integrales",
                 dateTime = now + 7200000,
-                location = "Biblioteca"
+                location = "Biblioteca",
+                category = "tarea",
+                reminderActive = true,
+                reminderMinutesBefore = 30
             ),
             Event(
                 id = UUID.randomUUID().toString(),
                 title = "Proyecto Final",
                 description = "Entrega de reporte",
                 dateTime = now + 10800000,
-                location = "Aula 101"
+                location = "Aula 101",
+                category = "evento",
+                reminderActive = false,
+                reminderMinutesBefore = 60
             )
         )
     }
@@ -50,13 +59,16 @@ class EventsViewModel : ViewModel() {
         showCreateEventDialog = show
     }
 
-    fun addEvent(title: String, description: String, dateTime: Long, location: String) {
+    fun addEvent(title: String, description: String, dateTime: Long, location: String, category: String = "personal", reminderActive: Boolean = false, reminderMinutesBefore: Int = 30) {
         val newEvent = Event(
             id = UUID.randomUUID().toString(),
             title = title,
             description = description,
             dateTime = dateTime,
-            location = location
+            location = location,
+            category = category,
+            reminderActive = reminderActive,
+            reminderMinutesBefore = reminderMinutesBefore
         )
         events = events + newEvent
         showCreateEventDialog = false

@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,10 +25,27 @@ fun SuggestionsBottomSheet(
 ) {
     var title by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("mejora") }
     var priority by remember { mutableStateOf("Media") }
     var isSending by remember { mutableStateOf(false) }
     var showSuccess by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+
+    val categories = listOf(
+        "mejora" to "🚀 Mejora de funcionalidad",
+        "bug" to "🐛 Reporte de error",
+        "nueva" to "✨ Nueva característica",
+        "diseno" to "🎨 Diseño/UI",
+        "otro" to "📌 Otro"
+    )
+
+    val categoryColors = mapOf(
+        "mejora" to Color(0xFF8B5CF6),
+        "bug" to Color(0xFFEF4444),
+        "nueva" to Color(0xFF10B981),
+        "diseno" to Color(0xFF06B6D4),
+        "otro" to Color(0xFFF59E0B)
+    )
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -68,6 +86,46 @@ fun SuggestionsBottomSheet(
                 singleLine = false,
                 minHeight = 120.dp
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Category selector
+            Text("Categoría", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                categories.forEach { (key, label) ->
+                    val selected = category == key
+                    val color = categoryColors[key] ?: Color(0xFF8B5CF6)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                if (selected) color.copy(alpha = 0.15f)
+                                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                            )
+                            .clickable { category = key }
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            label,
+                            color = if (selected) color else MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 13.sp,
+                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        if (selected) {
+                            Icon(
+                                Icons.Filled.Check,
+                                contentDescription = null,
+                                tint = color,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 

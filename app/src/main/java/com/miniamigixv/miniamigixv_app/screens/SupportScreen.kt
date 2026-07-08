@@ -13,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -259,9 +260,26 @@ private fun ReportProblemCard() {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("general") }
     var isSending by remember { mutableStateOf(false) }
     var sent by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
+    val categories = listOf(
+        "general" to "📋 Consulta general",
+        "bug" to "🐛 Reportar error",
+        "cuenta" to "🔑 Problema con cuenta",
+        "sugerencia" to "💡 Sugerencia",
+        "otro" to "📌 Otro"
+    )
+
+    val categoryColors = mapOf(
+        "general" to NeonCyan,
+        "bug" to Color(0xFFEF4444),
+        "cuenta" to Color(0xFFF59E0B),
+        "sugerencia" to Color(0xFF10B981),
+        "otro" to NeonPurple
+    )
 
     GlassCard {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -279,7 +297,50 @@ private fun ReportProblemCard() {
 
             InputField(value = name, label = "Nombre", placeholder = "Tu nombre", onValueChange = { name = it })
             InputField(value = email, label = "Email", placeholder = "tu@email.com", onValueChange = { email = it })
-            InputField(value = message, label = "Mensaje", placeholder = "Describe tu problema...", onValueChange = { message = it })
+
+            Text(
+                "Categoría",
+                color = Color.White.copy(alpha = 0.6f),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                categories.forEach { (key, label) ->
+                    val selected = category == key
+                    val color = categoryColors[key] ?: NeonPurple
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                if (selected) color.copy(alpha = 0.2f)
+                                else Color.White.copy(alpha = 0.05f)
+                            )
+                            .clickable { category = key }
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            label,
+                            color = if (selected) color else Color.White.copy(alpha = 0.7f),
+                            fontSize = 13.sp,
+                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        if (selected) {
+                            Icon(
+                                Icons.Filled.Check,
+                                contentDescription = null,
+                                tint = color,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            InputField(value = message, label = "Mensaje", placeholder = "Describe tu problema...", onValueChange = { message = it }, maxLines = 4)
 
             Button(
                 onClick = {
@@ -292,6 +353,7 @@ private fun ReportProblemCard() {
                             name = ""
                             email = ""
                             message = ""
+                            category = "general"
                         }
                     }
                 },
@@ -330,7 +392,8 @@ private fun InputField(
     value: String,
     label: String,
     placeholder: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    maxLines: Int = 1
 ) {
     Column {
         Text(
@@ -350,7 +413,9 @@ private fun InputField(
                     color = Color.White.copy(alpha = 0.3f)
                 )
             },
-            singleLine = true,
+            singleLine = maxLines == 1,
+            minLines = if (maxLines > 1) maxLines else 1,
+            maxLines = maxLines,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = NeonPurple,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.1f),
