@@ -127,8 +127,8 @@ private fun AdminDashboard() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                StatCard("Usuarios", "1,234", NeonViolet, Icons.Filled.People)
-                StatCard("Eventos", "56", NeonBlue, Icons.Filled.Event)
+                StatCard("Usuarios", "1,234", NeonViolet, Icons.Filled.People, modifier = Modifier.weight(1f))
+                StatCard("Eventos", "56", NeonBlue, Icons.Filled.Event, modifier = Modifier.weight(1f))
             }
         }
         
@@ -137,8 +137,8 @@ private fun AdminDashboard() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                StatCard("Tickets", "23", Color(0xFFF59E0B), Icons.Filled.SupportAgent)
-                StatCard("Sugerencias", "12", Color(0xFF10B981), Icons.Filled.Lightbulb)
+                StatCard("Tickets", "23", Color(0xFFF59E0B), Icons.Filled.SupportAgent, modifier = Modifier.weight(1f))
+                StatCard("Sugerencias", "12", Color(0xFF10B981), Icons.Filled.Lightbulb, modifier = Modifier.weight(1f))
             }
         }
         
@@ -415,10 +415,15 @@ private fun AdminSuggestions() {
 }
 
 @Composable
-private fun StatCard(label: String, value: String, color: Color, icon: androidx.compose.ui.graphics.vector.ImageVector) {
+private fun StatCard(
+    label: String,
+    value: String,
+    color: Color,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    modifier: Modifier = Modifier
+) {
     GlassCard(
-        modifier = Modifier
-            .weight(1f)
+        modifier = modifier
             .background(color.copy(alpha = 0.05f), RoundedCornerShape(16.dp))
     ) {
         Column(

@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -365,19 +363,28 @@ fun HomeScreen(
                 }
 
                 // Module Cards
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 160.dp),
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 400.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(modules) { module ->
-                        ModuleCardItem(
-                            module = module,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    modules.chunked(2).forEach { rowModules ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            rowModules.forEach { module ->
+                                ModuleCardItem(
+                                    module = module,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                )
+                            }
+                            // Si hay solo 1 item en la fila, agrega un Spacer
+                            if (rowModules.size == 1) {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+                        }
                     }
                 }
 

@@ -466,7 +466,8 @@ fun NotificationsScreen(themeViewModel: ThemeViewModel, onBack: () -> Unit) {
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Column(
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     IconButton(
                                         onClick = { /* TODO: Mark as read */ },

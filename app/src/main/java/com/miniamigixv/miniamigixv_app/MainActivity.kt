@@ -97,7 +97,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
             MiniAmigixV_AppTheme(darkTheme = isDarkTheme) {
-                AppNavigation(this, themeViewModel)
+                AppNavigation(this@MainActivity, themeViewModel)
             }
         }
     }

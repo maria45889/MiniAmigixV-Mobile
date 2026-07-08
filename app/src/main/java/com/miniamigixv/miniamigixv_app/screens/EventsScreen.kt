@@ -2,9 +2,11 @@ package com.miniamigixv.miniamigixv_app.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -246,8 +248,16 @@ fun EventsScreen(
     if (eventsViewModel.showCreateEventDialog) {
         CreateEventDialog(
             onDismiss = { eventsViewModel.toggleCreateEventDialog(false) },
-            onConfirm = { title, description, dateTime, location ->
-                eventsViewModel.addEvent(title, description, dateTime, location)
+            onConfirm = { title, description, dateTime, location, category, reminderActive, reminderMinutesBefore ->
+                eventsViewModel.addEvent(
+                    title,
+                    description,
+                    dateTime,
+                    location,
+                    category,
+                    reminderActive,
+                    reminderMinutesBefore
+                )
             }
         )
     }
@@ -776,12 +786,13 @@ fun CreateEventDialog(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                LazyRow(
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
                 ) {
-                    items(categoryInfo.size) { index ->
-                        val (catName, catEmoji) = categoryInfo[index]
+                    categoryInfo.forEachIndexed { index, (catName, catEmoji) ->
                         val selected = category == catName.lowercase()
                         FilterChip(
                             selected = selected,
