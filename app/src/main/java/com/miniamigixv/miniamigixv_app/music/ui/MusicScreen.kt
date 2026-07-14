@@ -151,11 +151,16 @@ private fun NowPlayingSection(
         ),
         label = "vinylRotation"
     )
+    
+    // Only animate rotation when music is playing
+    val displayRotation by remember(state.isPlaying) {
+        derivedStateOf { if (state.isPlaying) vinylRotation else 0f }
+    }
 
     GlassCard(modifier = Modifier.fillMaxWidth()) {
         Column {
             Text(
-                "\uD83C\uDFB5 REPRODUCIENDO AHORA",
+                "REPRODUCIENDO AHORA",
                 fontSize = 12.sp,
                 color = NeonCyan,
                 fontWeight = FontWeight.Bold,
@@ -168,7 +173,7 @@ private fun NowPlayingSection(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    VinylRecord(isPlaying = state.isPlaying, rotation = vinylRotation)
+                    VinylRecord(isPlaying = state.isPlaying, rotation = displayRotation)
                     NowPlayingInfoContent(state, viewModel, modifier = Modifier.fillMaxWidth())
                 }
             } else {
@@ -176,7 +181,7 @@ private fun NowPlayingSection(
                     horizontalArrangement = Arrangement.spacedBy(24.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    VinylRecord(isPlaying = state.isPlaying, rotation = vinylRotation)
+                    VinylRecord(isPlaying = state.isPlaying, rotation = displayRotation)
                     NowPlayingInfoContent(state, viewModel, modifier = Modifier.weight(1f))
                 }
             }
@@ -186,12 +191,10 @@ private fun NowPlayingSection(
 
 @Composable
 private fun VinylRecord(isPlaying: Boolean, rotation: Float) {
-    val displayRotation = if (isPlaying) rotation else 0f
-
     Box(
         modifier = Modifier
             .size(140.dp)
-            .rotate(displayRotation)
+            .rotate(rotation)
             .clip(CircleShape)
             .background(
                 Brush.radialGradient(
@@ -407,7 +410,7 @@ private fun VideoSection(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "\uD83C\uDFAC VIDEO",
+                    "VIDEO",
                     fontSize = 12.sp,
                     color = NeonBlue,
                     fontWeight = FontWeight.Bold,
@@ -566,7 +569,7 @@ private fun LibrarySection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "\uD83C\uDFB6 TU BIBLIOTECA",
+                    "TU BIBLIOTECA",
                     fontSize = 13.sp,
                     color = NeonCyan,
                     fontWeight = FontWeight.Bold,
@@ -591,7 +594,7 @@ private fun LibrarySection(
                 onValueChange = { searchQuery = it },
                 placeholder = {
                     Text(
-                        "\uD83D\uDD0D Buscar canci\u00F3n...",
+                        "Buscar canci\u00F3n...",
                         fontSize = 13.sp,
                         color = Color(0xFF64748B)
                     )
@@ -614,7 +617,7 @@ private fun LibrarySection(
             ) {
                 if (filteredTracks.isEmpty()) {
                     Text(
-                        "\uD83C\uDFB5 Tu biblioteca est\u00E1 vac\u00EDa",
+                        "Tu biblioteca est\u00E1 vac\u00EDa",
                         fontSize = 13.sp,
                         color = Color(0xFF64748B),
                         modifier = Modifier
@@ -759,7 +762,7 @@ private fun FavoritesSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "\u2764\uFE0F FAVORITAS",
+                    "FAVORITAS",
                     fontSize = 13.sp,
                     color = NeonCyan,
                     fontWeight = FontWeight.Bold,
@@ -847,7 +850,7 @@ private fun StatsSection(
     GlassCard(modifier = Modifier.fillMaxWidth()) {
         Column {
             Text(
-                "\uD83D\uDCCA TUS ESTAD\u00CDSTICAS",
+                "TUS ESTAD\u00CDSTICAS",
                 fontSize = 13.sp,
                 color = NeonCyan,
                 fontWeight = FontWeight.Bold,
@@ -934,7 +937,7 @@ private fun RecommendationsSection() {
     GlassCard(modifier = Modifier.fillMaxWidth()) {
         Column {
             Text(
-                "\uD83C\uDFA7 RECOMENDACIONES",
+                "RECOMENDACIONES",
                 fontSize = 13.sp,
                 color = NeonCyan,
                 fontWeight = FontWeight.Bold,
@@ -980,7 +983,10 @@ private fun AddTrackCard(viewModel: MusicViewModel) {
     var youtubeId by remember { mutableStateOf("") }
 
     GlassCard(modifier = Modifier.fillMaxWidth()) {
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(
                 "A\u00D1ADIR PISTA",
                 fontSize = 12.sp,
@@ -1067,14 +1073,16 @@ private fun AddTrackCard(viewModel: MusicViewModel) {
             ) {
                 Button(
                     onClick = {
-                        viewModel.addTrack(
-                            name,
-                            artist,
-                            youtubeId.ifBlank { null }
-                        )
-                        name = ""
-                        artist = ""
-                        youtubeId = ""
+                        if (name.isNotBlank()) {
+                            viewModel.addTrack(
+                                name,
+                                artist,
+                                youtubeId.ifBlank { null }
+                            )
+                            name = ""
+                            artist = ""
+                            youtubeId = ""
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
@@ -1083,7 +1091,7 @@ private fun AddTrackCard(viewModel: MusicViewModel) {
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        "VINCULAR A LA MATRIZ",
+                        "AGREGAR CANCIÓN",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -1103,7 +1111,7 @@ private fun DownloaderSection() {
     GlassCard(modifier = Modifier.fillMaxWidth()) {
         Column {
             Text(
-                "\uD83D\uDCE5 DESCARGADOR DE M\u00DASICA",
+                "DESCARGADOR",
                 fontSize = 12.sp,
                 color = NeonPurple,
                 fontWeight = FontWeight.Bold,
@@ -1193,7 +1201,12 @@ private fun DownloaderSection() {
                     )
             ) {
                 Button(
-                    onClick = { },
+                    onClick = {
+                        if (downloadUrl.isNotBlank()) {
+                            // TODO: Implement actual download functionality
+                            // For now, validate URL format
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent

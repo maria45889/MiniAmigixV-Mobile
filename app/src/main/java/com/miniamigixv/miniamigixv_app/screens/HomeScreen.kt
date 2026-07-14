@@ -96,18 +96,17 @@ fun HomeScreen(
     onNavigateToNotifications: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
-    var showSuggestionsDialog by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
     val isDarkTheme by themeViewModel?.isDarkTheme?.collectAsState() ?: remember { mutableStateOf(true) }
 
     val modules = listOf(
-        ModuleCard("Chat IA", "Conversa con tu asistente virtual inteligente.", Icons.Filled.SmartToy, NeonPink, onNavigateToChat),
-        ModuleCard("Música", "Escucha tus canciones favoritas.", Icons.Filled.LibraryMusic, NeonBlue, onNavigateToMusic),
         ModuleCard("Juegos", "Diviértete con nuestra colección.", Icons.Filled.SportsEsports, NeonGreen, onNavigateToGames),
         ModuleCard("Estudio", "Herramientas para mejorar tu aprendizaje.", Icons.Filled.School, NeonOrange, onNavigateToStudy),
         ModuleCard("Clima", "Revisa el pronóstico actual.", Icons.Filled.Cloud, NeonCyan, onNavigateToWeather),
-        ModuleCard("Blog", "Lee y comparte tus ideas.", Icons.Filled.Article, NeonPurple, onNavigateToBlog)
+        ModuleCard("Blog", "Lee y comparte tus ideas.", Icons.Filled.Article, NeonPurple, onNavigateToBlog),
+        ModuleCard("Eventos", "Descubre qué está pasando.", Icons.Filled.Event, NeonBlue, onNavigateToEvents),
+        ModuleCard("Traductor", "Traduce textos al instante.", Icons.Filled.Translate, NeonPink, onNavigateToTranslator)
     )
 
     val menuItems = listOf(
@@ -225,9 +224,6 @@ fun HomeScreen(
                         IconButton(onClick = onNavigateToProfile) {
                             Icon(Icons.Filled.PersonOutline, contentDescription = "Perfil", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        IconButton(onClick = { showSuggestionsDialog = true }) {
-                            Icon(Icons.Filled.HelpOutline, contentDescription = "Ayuda / Sugerencias", tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
                         IconButton(onClick = onNavigateToSettings) {
                             Icon(Icons.Filled.Settings, contentDescription = "Configuración", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
@@ -240,10 +236,7 @@ fun HomeScreen(
             topBar = {
                 TopAppBar(
                     title = { 
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("MiniAmigixV", color = NeonPurple, fontWeight = FontWeight.Bold)
-                            Text(" / Inicio", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 16.sp)
-                        }
+                        Text("Inicio", color = NeonPurple, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     },
                     navigationIcon = {
                         IconButton(onClick = { coroutineScope.launch { drawerState.open() } }) {
@@ -253,6 +246,9 @@ fun HomeScreen(
                     actions = {
                         IconButton(onClick = onNavigateToNotifications) {
                             Icon(Icons.Filled.NotificationsNone, contentDescription = "Notificaciones", tint = MaterialTheme.colorScheme.onBackground)
+                        }
+                        IconButton(onClick = onNavigateToStudy) {
+                            Icon(Icons.Filled.School, contentDescription = "Estudio", tint = MaterialTheme.colorScheme.onBackground)
                         }
                         IconButton(onClick = { themeViewModel?.toggleTheme() }) {
                             Icon(
@@ -304,11 +300,6 @@ fun HomeScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = "🤖",
-                            fontSize = 64.sp
-                        )
                     }
                 }
 
@@ -334,28 +325,28 @@ fun HomeScreen(
                 ) {
                     QuickAccessItem(
                         title = "IA",
-                        iconText = "💬",
+                        iconText = "",
                         gradient = listOf(NeonPink, NeonOrange),
                         onClick = onNavigateToChat,
                         modifier = Modifier.weight(1f)
                     )
                     QuickAccessItem(
                         title = "Música",
-                        iconText = "🎵",
+                        iconText = "",
                         gradient = listOf(NeonBlue, NeonCyan),
                         onClick = onNavigateToMusic,
                         modifier = Modifier.weight(1f)
                     )
                     QuickAccessItem(
                         title = "Juegos",
-                        iconText = "🎮",
+                        iconText = "",
                         gradient = listOf(NeonGreen, NeonCyan),
                         onClick = onNavigateToGames,
                         modifier = Modifier.weight(1f)
                     )
                     QuickAccessItem(
                         title = "Traductor",
-                        iconText = "🌐",
+                        iconText = "",
                         gradient = listOf(NeonPurple, NeonPink),
                         onClick = onNavigateToTranslator,
                         modifier = Modifier.weight(1f)
@@ -414,13 +405,6 @@ fun HomeScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            
-            if (showSuggestionsDialog) {
-                NeonSuggestionsDialog(
-                    onDismiss = { showSuggestionsDialog = false },
-                    onSubmit = { showSuggestionsDialog = false }
-                )
-            }
         }
     }
 }
@@ -429,7 +413,7 @@ fun HomeScreen(
 private fun FraseDelDiaCard(modifier: Modifier = Modifier) {
     GlassCard(modifier = modifier) {
         Column {
-            Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = NeonOrange)
+            Icon(Icons.Filled.AutoAwesome, contentDescription = "Frase destacada", tint = NeonOrange)
             Spacer(modifier = Modifier.height(8.dp))
             Text("Frase del Día", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
@@ -453,16 +437,16 @@ private fun TuActividadCard(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KpiItem("💬", "0", "Chats")
-                KpiItem("🎵", "0", "Canciones")
+                KpiItem("", "0", "Chats")
+                KpiItem("", "0", "Canciones")
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                KpiItem("📅", "0", "Eventos")
-                KpiItem("🌦", "23°", "Clima")
+                KpiItem("", "0", "Eventos")
+                KpiItem("", "23°", "Clima")
             }
         }
     }
@@ -536,7 +520,7 @@ private fun RecentActivityItem(text: String, time: String) {
                     text.contains("Traductor") -> Icons.Filled.Translate
                     else -> Icons.Filled.CheckCircle
                 }
-                Icon(icon, contentDescription = null, tint = NeonPurple, modifier = Modifier.size(20.dp))
+                Icon(icon, contentDescription = "Actividad: $text", tint = NeonPurple, modifier = Modifier.size(20.dp))
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -557,13 +541,13 @@ private fun ModuleCardItem(
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(targetValue = if (isPressed) 0.95f else 1f, label = "scale")
     
-    var glowAlpha by remember { mutableStateOf(0.1f) }
+    var glowAlpha by remember { mutableStateOf(0.08f) }
     LaunchedEffect(Unit) {
         while (true) {
-            glowAlpha = 0.3f
-            delay(1000)
-            glowAlpha = 0.1f
-            delay(1000)
+            glowAlpha = 0.12f
+            delay(2000)
+            glowAlpha = 0.08f
+            delay(2000)
         }
     }
 
@@ -590,7 +574,7 @@ private fun ModuleCardItem(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(module.icon, contentDescription = null, tint = module.iconColor, modifier = Modifier.size(28.dp))
+                    Icon(module.icon, contentDescription = "Módulo: ${module.title}", tint = module.iconColor, modifier = Modifier.size(28.dp))
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(module.title, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 16.sp)
@@ -621,7 +605,7 @@ private fun NeonSuggestionsDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(Icons.Filled.Lightbulb, contentDescription = null, tint = NeonPurple)
+                    Icon(Icons.Filled.Lightbulb, contentDescription = "Sugerencias", tint = NeonPurple)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Sugerencias",
@@ -642,14 +626,14 @@ private fun NeonSuggestionsDialog(
                         .fillMaxWidth()
                         .height(120.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFF09090B))
+                        .background(Color(0xFF1A1A1E))
                         .padding(2.dp)
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(RoundedCornerShape(6.dp))
-                            .background(Color(0xFF09090B))
+                            .background(Color(0xFF1A1A1E))
                             .padding(12.dp)
                     ) {
                         OutlinedTextField(
@@ -676,7 +660,7 @@ private fun NeonSuggestionsDialog(
                         
                         Icon(
                             Icons.Filled.SmartToy,
-                            contentDescription = null,
+                            contentDescription = "Asistente IA",
                             tint = NeonGreen,
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
@@ -693,8 +677,8 @@ private fun NeonSuggestionsDialog(
                     ) {
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             drawRoundRect(
-                                color = NeonPurple,
-                                style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2f),
+                                color = NeonPurple.copy(alpha = 0.6f),
+                                style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.5f),
                                 cornerRadius = CornerRadius(8.dp.toPx())
                             )
                         }
